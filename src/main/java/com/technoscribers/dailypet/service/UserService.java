@@ -4,8 +4,11 @@ import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.model.enumeration.RoleName;
 import com.technoscribers.dailypet.repository.RolesRepository;
 import com.technoscribers.dailypet.repository.UserRepository;
+import com.technoscribers.dailypet.repository.entity.DpService;
+import com.technoscribers.dailypet.repository.entity.Person;
 import com.technoscribers.dailypet.repository.entity.Roles;
 import com.technoscribers.dailypet.repository.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
  *
  */
 @Service
-public class RegisterService {
+public class UserService {
 
     @Autowired
     UserRepository userRepository;
@@ -26,15 +29,39 @@ public class RegisterService {
     @Autowired
     RolesRepository rolesRepository;
 
+    @Autowired
+    DpServiceService dpServiceService;
+
+    @Autowired
+    PersonService personService;
+
     /**
      * Register user
      *
      * @param userModel
      * @return
      */
-    public User registerUser(UserModel userModel) {
+    @Transactional
+    public UserModel registerUser(UserModel userModel) {
         User user = getUser(userModel);
-        return userRepository.save(user); //JPA in-built query
+        User savedUser = userRepository.save(user); //JPA in-built query
+        //UserModel savedModel = new UserModel(user.getEmail(), RoleName.valueOf(savedUser.getRoles().getName()));
+        if(savedUser!=null)
+            userModel.setUserId(savedUser.getId());
+        if(userModel.getRole()==RoleName.SERVICE){
+            DpService dpService =  dpServiceService.getService(userModel.getDpServiceModel());
+            dpService.setUser(savedUser);
+            DpService savedDpS = dpServiceService.save(dpService);
+            if(savedDpS!=null)
+                userModel.setServiceId(savedDpS.getId());
+        }else{
+            Person person = personService.getPerson(userModel.getDpPersonModel());
+            person.setUser(savedUser);
+            Person savedPerson = personService.save(person);
+            if(savedPerson!=null)
+                userModel.setPersonId(savedPerson.getId());
+        }
+        return userModel;
     }
 
     /**

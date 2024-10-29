@@ -12,6 +12,11 @@ public class UserModel {
     private String email;
     private String password;
     private RoleName role;
+    private DPServiceModel dpServiceModel;
+    private DPPersonModel dpPersonModel;
+    private Long serviceId;
+    private Long personId;
+    private Long userId;
 
     public UserModel(String email, RoleName role) {
         this.email = email;

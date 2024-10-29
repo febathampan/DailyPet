@@ -2,7 +2,7 @@ package com.technoscribers.dailypet.controller;
 
 import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.repository.entity.User;
-import com.technoscribers.dailypet.service.RegisterService;
+import com.technoscribers.dailypet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.List;
 public class HomeController {
 
     @Autowired
-    RegisterService registerService;
+    UserService userService;
 
     /**
      * Health check API
@@ -38,7 +38,7 @@ public class HomeController {
      */
     @PostMapping("/user")
     public ResponseEntity<String> registerUser(@RequestBody UserModel userModel){
-        User user = registerService.registerUser(userModel);
+        UserModel user = userService.registerUser(userModel);
         if(user!=null) {
             return ResponseEntity.ok().body("Saved user!");
         }
@@ -48,6 +48,6 @@ public class HomeController {
 
     @GetMapping("/user")
     public ResponseEntity<List<UserModel>> getAllUsers(){
-        return ResponseEntity.ok().body(registerService.getAllUsers());
+        return ResponseEntity.ok().body(userService.getAllUsers());
     }
 }
