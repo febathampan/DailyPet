@@ -24,7 +24,7 @@ public class VaccinationController {
     @PostMapping()
     public ResponseEntity<?> addVaccine(@RequestBody VaccineModel vaccineModel) {
         try {
-            VaccineModel savedPet = vaccineService.saveVaccineForPet(vaccineModel);
+            VaccineModel savedPet = vaccineService.saveVaccineForPet(vaccineModel, null);
             return ResponseEntity.ok().body(savedPet);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -34,7 +34,7 @@ public class VaccinationController {
     @PostMapping("/all")
     public ResponseEntity<?> addVaccines(@RequestBody List<VaccineModel> vaccineModels) {
         try {
-            List<VaccineModel> savedVaccines = vaccineService.saveVaccineForPet(vaccineModels);
+            List<VaccineModel> savedVaccines = vaccineService.saveVaccineForPet(vaccineModels, null);
             return ResponseEntity.ok().body(savedVaccines);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

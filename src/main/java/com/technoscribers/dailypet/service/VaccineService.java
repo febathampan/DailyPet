@@ -23,8 +23,11 @@ public class VaccineService {
     @Autowired
     PetDetailsRepository petDetailsRepository;
 
-    public VaccineModel saveVaccineForPet(VaccineModel vaccineModel) throws UnableToPersistException {
-        Optional<PetDetails> petDetails = petDetailsRepository.findById(vaccineModel.getPetId());
+    public VaccineModel saveVaccineForPet(VaccineModel vaccineModel, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        if(petDetails.isEmpty()) {
+            //If input detail is null, then model has petDetailsId
+            petDetails = petDetailsRepository.findById(vaccineModel.getPetId());
+        }
         if (petDetails.isEmpty()) {
             throw new UnableToPersistException("PetDetails not found!");
         }
@@ -39,10 +42,10 @@ public class VaccineService {
         }
         return vaccineModel;
     }
-    public List<VaccineModel> saveVaccineForPet(List<VaccineModel> vaccineModels) throws UnableToPersistException {
+    public List<VaccineModel> saveVaccineForPet(List<VaccineModel> vaccineModels, PetDetails petDetails) throws UnableToPersistException {
         List<VaccineModel> savedVaccines = new ArrayList<>();
         for(VaccineModel v: vaccineModels){
-            VaccineModel result = saveVaccineForPet(v);
+            VaccineModel result = saveVaccineForPet(v, Optional.ofNullable(petDetails));
             savedVaccines.add(result);
         }
         return savedVaccines;

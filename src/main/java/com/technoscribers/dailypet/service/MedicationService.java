@@ -24,17 +24,20 @@ public class MedicationService {
     @Autowired
     MedicationRepository medicationRepository;
 
-    public List<MedicationModel> saveMedicationForPet(List<MedicationModel> medicationModels) throws UnableToPersistException {
+    public List<MedicationModel> saveMedicationForPet(List<MedicationModel> medicationModels, PetDetails petDetails) throws UnableToPersistException {
         List<MedicationModel> medications = new ArrayList<>();
         for (MedicationModel m : medicationModels) {
-            MedicationModel result = saveMedicationForPet(m);
+            MedicationModel result = saveMedicationForPet(m, Optional.ofNullable(petDetails));
             medications.add(result);
         }
         return medications;
     }
 
-    public MedicationModel saveMedicationForPet(MedicationModel medicationModel) throws UnableToPersistException {
-        Optional<PetDetails> petDetails = petDetailsRepository.findById(medicationModel.getPetId());
+    public MedicationModel saveMedicationForPet(MedicationModel medicationModel, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        if(petDetails.isEmpty()) {
+            //Assuming incoming model has petDetails id
+            petDetails = petDetailsRepository.findById(medicationModel.getPetId());
+        }
         if (petDetails.isEmpty()) {
             throw new UnableToPersistException("PetDetails not found!");
         }

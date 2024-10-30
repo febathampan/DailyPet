@@ -23,7 +23,7 @@ public class AppointmentController {
     @PostMapping()
     public ResponseEntity<?> addAppointment(@RequestBody AppointmentModel model) {
         try {
-            AppointmentModel result = appointmentService.saveAppointmentForPet(model);
+            AppointmentModel result = appointmentService.saveAppointmentForPet(model,null);
             return ResponseEntity.ok().body(result);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -33,7 +33,7 @@ public class AppointmentController {
     @PostMapping("/all")
     public ResponseEntity<?> addAppointment(@RequestBody List<AppointmentModel> models) {
         try {
-            List<AppointmentModel> results = appointmentService.saveAppointmentForPet(models);
+            List<AppointmentModel> results = appointmentService.saveAppointmentForPet(models,null);
             return ResponseEntity.ok().body(results);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

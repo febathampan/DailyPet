@@ -24,8 +24,11 @@ public class AppointmentService {
     @Autowired
     AppointmentRepository appointmentRepository;
 
-    public AppointmentModel saveAppointmentForPet(AppointmentModel model) throws UnableToPersistException {
-        Optional<PetDetails> petDetails = petDetailsRepository.findById(model.getPetId());
+    public AppointmentModel saveAppointmentForPet(AppointmentModel model, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        if(petDetails.isEmpty()) {
+            //Assuming petDetails id is in model
+           petDetails = petDetailsRepository.findById(model.getPetId());
+        }
         if (petDetails.isEmpty()) {
             throw new UnableToPersistException("PetDetails not found!");
         }
@@ -42,10 +45,10 @@ public class AppointmentService {
         return model;
     }
 
-    public List<AppointmentModel> saveAppointmentForPet(List<AppointmentModel> models) throws UnableToPersistException {
+    public List<AppointmentModel> saveAppointmentForPet(List<AppointmentModel> models, PetDetails petDetails) throws UnableToPersistException {
         List<AppointmentModel> savedModels = new ArrayList<>();
         for (AppointmentModel a : models) {
-            AppointmentModel result = saveAppointmentForPet(a);
+            AppointmentModel result = saveAppointmentForPet(a, Optional.ofNullable(petDetails));
             savedModels.add(result);
         }
         return savedModels;

@@ -65,13 +65,13 @@ public class PetProfileService {
                 throw new UnableToPersistException("Unable to save pet details");
             }
             if (!model.getAppointments().isEmpty()) {
-                appointmentService.saveAppointmentForPet(model.getAppointments());
+                appointmentService.saveAppointmentForPet(model.getAppointments(), savedDetails);
             }
             if (!model.getVaccines().isEmpty()) {
-                vaccineService.saveVaccineForPet(model.getVaccines());
+                vaccineService.saveVaccineForPet(model.getVaccines(), savedDetails);
             }
             if (!model.getMedications().isEmpty()) {
-                medicationService.saveMedicationForPet(model.getMedications());
+                medicationService.saveMedicationForPet(model.getMedications(), savedDetails);
             }
 
         }

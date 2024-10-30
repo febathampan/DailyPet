@@ -24,7 +24,7 @@ public class MedicationController {
     @PostMapping()
     public ResponseEntity<?> addMedication(@RequestBody MedicationModel model) {
         try {
-            MedicationModel result = medicationService.saveMedicationForPet(model);
+            MedicationModel result = medicationService.saveMedicationForPet(model, null);
             return ResponseEntity.ok().body(result);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -34,7 +34,7 @@ public class MedicationController {
     @PostMapping("/all")
     public ResponseEntity<?> addMedication(@RequestBody List<MedicationModel> models) {
         try {
-            List<MedicationModel> results = medicationService.saveMedicationForPet(models);
+            List<MedicationModel> results = medicationService.saveMedicationForPet(models, null);
             return ResponseEntity.ok().body(results);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
