@@ -45,10 +45,10 @@ public class AppointmentService {
         return model;
     }
 
-    public List<AppointmentModel> saveAppointmentForPet(List<AppointmentModel> models, PetDetails petDetails) throws UnableToPersistException {
+    public List<AppointmentModel> saveAppointmentForPet(List<AppointmentModel> models, Optional<PetDetails> petDetails) throws UnableToPersistException {
         List<AppointmentModel> savedModels = new ArrayList<>();
         for (AppointmentModel a : models) {
-            AppointmentModel result = saveAppointmentForPet(a, Optional.ofNullable(petDetails));
+            AppointmentModel result = saveAppointmentForPet(a,petDetails);
             savedModels.add(result);
         }
         return savedModels;

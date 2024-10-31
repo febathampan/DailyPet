@@ -55,6 +55,7 @@ public class UserService {
             if(savedDpS!=null)
                 userModel.setServiceId(savedDpS.getId());
         }else{
+            //NEED TO CHECK- IF PETWALKER- WHAT DETAILS TO SAVE??
             Person person = personService.getPerson(userModel.getDpPersonModel());
             person.setUser(savedUser);
             Person savedPerson = personService.save(person);

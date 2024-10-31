@@ -1,0 +1,39 @@
+BREED, ROLES, PET TYPE
+
+{
+
+  "name": "pet1",
+  "dob": "2020-10-31T03:22:49.049Z",
+  "gender": "MALE",
+  "idNo": "123ABC",
+  "weight": 3,
+  "unit": "KG",
+  "breedId": 1,
+  "ownerId": 1,
+
+  "appointments": [
+    {
+
+      "title": "APT_PET 1",
+      "location": "WATERLOO",
+      "date": "2024-11-25T03:22:49.049Z",
+      "description": "TEST PET 1"
+
+    }
+  ],
+  "vaccines": [
+    {
+      "name": "VAC1",
+      "scheduledDate": "2024-10-31T03:22:49.049Z",
+      "previousDate": "2024-10-20T03:22:49.049Z",
+      "description": "TEST VACCINE"
+    }
+  ],
+  "medications": [
+    {
+      "name": "Med",
+      "start": "2024-10-31T03:22:49.049Z",
+      "end": "2024-11-30T03:22:49.049Z"
+    }
+  ]
+}

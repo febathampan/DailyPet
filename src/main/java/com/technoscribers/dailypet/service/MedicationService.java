@@ -24,10 +24,10 @@ public class MedicationService {
     @Autowired
     MedicationRepository medicationRepository;
 
-    public List<MedicationModel> saveMedicationForPet(List<MedicationModel> medicationModels, PetDetails petDetails) throws UnableToPersistException {
+    public List<MedicationModel> saveMedicationForPet(List<MedicationModel> medicationModels, Optional<PetDetails> petDetails) throws UnableToPersistException {
         List<MedicationModel> medications = new ArrayList<>();
         for (MedicationModel m : medicationModels) {
-            MedicationModel result = saveMedicationForPet(m, Optional.ofNullable(petDetails));
+            MedicationModel result = saveMedicationForPet(m, petDetails);
             medications.add(result);
         }
         return medications;

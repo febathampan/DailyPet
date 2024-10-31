@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/appointments")
@@ -23,7 +24,7 @@ public class AppointmentController {
     @PostMapping()
     public ResponseEntity<?> addAppointment(@RequestBody AppointmentModel model) {
         try {
-            AppointmentModel result = appointmentService.saveAppointmentForPet(model,null);
+            AppointmentModel result = appointmentService.saveAppointmentForPet(model,Optional.empty());
             return ResponseEntity.ok().body(result);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -33,7 +34,7 @@ public class AppointmentController {
     @PostMapping("/all")
     public ResponseEntity<?> addAppointment(@RequestBody List<AppointmentModel> models) {
         try {
-            List<AppointmentModel> results = appointmentService.saveAppointmentForPet(models,null);
+            List<AppointmentModel> results = appointmentService.saveAppointmentForPet(models, Optional.empty());
             return ResponseEntity.ok().body(results);
         } catch (UnableToPersistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

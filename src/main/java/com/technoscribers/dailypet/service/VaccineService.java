@@ -42,10 +42,10 @@ public class VaccineService {
         }
         return vaccineModel;
     }
-    public List<VaccineModel> saveVaccineForPet(List<VaccineModel> vaccineModels, PetDetails petDetails) throws UnableToPersistException {
+    public List<VaccineModel> saveVaccineForPet(List<VaccineModel> vaccineModels, Optional<PetDetails> petDetails) throws UnableToPersistException {
         List<VaccineModel> savedVaccines = new ArrayList<>();
         for(VaccineModel v: vaccineModels){
-            VaccineModel result = saveVaccineForPet(v, Optional.ofNullable(petDetails));
+            VaccineModel result = saveVaccineForPet(v, petDetails);
             savedVaccines.add(result);
         }
         return savedVaccines;
