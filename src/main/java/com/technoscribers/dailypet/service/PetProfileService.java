@@ -87,6 +87,7 @@ public class PetProfileService {
                 if (!model.getMedications().isEmpty()) {
                     medicationService.saveMedicationForPet(model.getMedications(), Optional.of(savedDetails));
                 }
+                return savedDetails;
             }
         }
         throw new IncompleteInfoException("Pet details incomplete!");
