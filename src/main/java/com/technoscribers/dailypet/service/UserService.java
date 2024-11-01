@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -90,5 +91,9 @@ public class UserService {
     private List<UserModel> getUserModelFromUser(List<User> results) {
        return results.stream().map( r->
                 new UserModel(r.getEmail(), RoleName.valueOf(r.getRoles().getName()))).collect(Collectors.toList());
+    }
+
+    public Optional<User> findById(Long id){
+        return userRepository.findById(id);
     }
 }
