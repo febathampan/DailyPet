@@ -17,9 +17,9 @@ public class PetController {
     PetProfileService petService;
 
     @PostMapping("/pet")
-    public ResponseEntity<?> registerPet(@RequestBody PetDetailsModel petDetailsModel, @RequestPart(value = "image", required = false)MultipartFile image){
+    public ResponseEntity<?> registerPet(@RequestBody PetDetailsModel petDetailsModel){
         try{
-            PetDetailsModel savedPet = petService.savePet(petDetailsModel, image);
+            PetDetailsModel savedPet = petService.savePet(petDetailsModel, null);
             return ResponseEntity.ok().body(savedPet);
         }catch (IncompleteInfoException | UnableToPersistException e){
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -53,8 +53,7 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_30010005F48040EDBCE5FAFCEE1DE6C0 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F9EB20BE306A412493814585362E85A9 }}
       - name: Set Active Profile to QA
-        env:
-          SPRING_PROFILES_ACTIVE: qa
+        run: echo "SPRING_PROFILES_ACTIVE=qa" >> $GITHUB_ENV
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
