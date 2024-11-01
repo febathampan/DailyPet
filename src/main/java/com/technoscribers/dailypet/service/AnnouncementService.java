@@ -48,4 +48,9 @@ public class AnnouncementService {
         List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
         return models;
     }
+
+    public String deleteAnnouncement(Long announcementId) {
+         announcementRepository.deleteById(announcementId);
+        return "Success";
+    }
 }

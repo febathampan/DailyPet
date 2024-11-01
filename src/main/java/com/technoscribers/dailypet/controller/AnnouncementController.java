@@ -36,4 +36,9 @@ public class AnnouncementController {
         }
     }
 
-}
+    @DeleteMapping()
+    public ResponseEntity<String> deleteAnnouncements(@RequestParam Long announcementId) {
+        return ResponseEntity.ok().body(announcementService.deleteAnnouncement(announcementId));
+    }
+
+    }
