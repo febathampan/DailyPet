@@ -1,7 +1,6 @@
 package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.IncompleteInfoException;
-import com.technoscribers.dailypet.exceptions.UnableToPersistException;
 import com.technoscribers.dailypet.model.AnnouncementModel;
 import com.technoscribers.dailypet.repository.AnnouncementRepository;
 import com.technoscribers.dailypet.repository.entity.Announcement;
@@ -52,5 +51,15 @@ public class AnnouncementService {
     public String deleteAnnouncement(Long announcementId) {
          announcementRepository.deleteById(announcementId);
         return "Success";
+    }
+
+    public AnnouncementModel getAnnouncementById(Long announcementId) throws IncompleteInfoException {
+        Optional<Announcement> result = announcementRepository.findById(announcementId);
+        if(result.isEmpty()){
+            throw new IncompleteInfoException("Invalid announcement id");
+        }
+        Announcement a = result.get();
+        AnnouncementModel model = new AnnouncementModel(a.getId(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId());
+        return model;
     }
 }

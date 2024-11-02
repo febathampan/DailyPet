@@ -21,7 +21,8 @@ public class AnnouncementController {
         List<AnnouncementModel> results = announcementService.getAllAnnouncements();
         return ResponseEntity.ok().body(results);
     }
-    @GetMapping()
+
+    @GetMapping("/owner")
     public ResponseEntity<?> getAllActiveAnnouncements(@RequestParam Long ownerId) {
         List<AnnouncementModel> results = announcementService.getAllAnnouncements(ownerId);
         return ResponseEntity.ok().body(results);
@@ -41,4 +42,18 @@ public class AnnouncementController {
         return ResponseEntity.ok().body(announcementService.deleteAnnouncement(announcementId));
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAnnouncement(@RequestParam Long announcementId) {
+
+        AnnouncementModel results = null;
+        try {
+            results = announcementService.getAnnouncementById(announcementId);
+            return ResponseEntity.ok().body(results);
+        } catch (IncompleteInfoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
+
+
+}
