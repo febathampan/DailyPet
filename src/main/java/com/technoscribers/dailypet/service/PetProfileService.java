@@ -1,6 +1,6 @@
 package com.technoscribers.dailypet.service;
 
-import com.technoscribers.dailypet.exceptions.IncompleteInfoException;
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
 import com.technoscribers.dailypet.model.PetDetailsModel;
 import com.technoscribers.dailypet.repository.BreedRepository;
@@ -43,7 +43,7 @@ public class PetProfileService {
     @Autowired
     VaccineService vaccineService;
 
-    public PetDetailsModel savePet(PetDetailsModel model, MultipartFile image) throws IncompleteInfoException, UnableToPersistException {
+    public PetDetailsModel savePet(PetDetailsModel model, MultipartFile image) throws InvalidInfoException, UnableToPersistException {
         //save Pet
         PetDetails details = savePetDetailsFromModel(model, image);
         //save Image
@@ -51,15 +51,15 @@ public class PetProfileService {
         return model;
     }
 
-    private PetDetails savePetDetailsFromModel(PetDetailsModel model, MultipartFile image) throws IncompleteInfoException, UnableToPersistException {
+    private PetDetails savePetDetailsFromModel(PetDetailsModel model, MultipartFile image) throws InvalidInfoException, UnableToPersistException {
         if (model != null) {
             Optional<Breed> breed = breedRepository.findById(model.getBreedId());
             Optional<User> user = userRepository.findById(model.getOwnerId());
             if (breed.isEmpty()) {
-                throw new IncompleteInfoException("Unable to find breed with ID: " + model.getBreedId());
+                throw new InvalidInfoException("Unable to find breed with ID: " + model.getBreedId());
             }
             if (user.isEmpty()) {
-                throw new IncompleteInfoException("Unable to find user with ID: " + model.getOwnerId());
+                throw new InvalidInfoException("Unable to find user with ID: " + model.getOwnerId());
             }
             PetDetails details = new PetDetails(model.getName(), model.getDob(), model.getGender(), model.getIdNo(),
                     model.getWeight(), model.getUnit().name(), breed.get(), user.get());
@@ -90,7 +90,7 @@ public class PetProfileService {
                 return savedDetails;
             }
         }
-        throw new IncompleteInfoException("Pet details incomplete!");
+        throw new InvalidInfoException("Pet details incomplete!");
     }
 
     public Optional<PetDetails> findById(Long petId) {

@@ -1,13 +1,12 @@
 package com.technoscribers.dailypet.controller;
 
-import com.technoscribers.dailypet.exceptions.IncompleteInfoException;
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
 import com.technoscribers.dailypet.model.PetDetailsModel;
 import com.technoscribers.dailypet.service.PetProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/pets")
@@ -21,7 +20,7 @@ public class PetController {
         try{
             PetDetailsModel savedPet = petService.savePet(petDetailsModel, null);
             return ResponseEntity.ok().body(savedPet);
-        }catch (IncompleteInfoException | UnableToPersistException e){
+        }catch (InvalidInfoException | UnableToPersistException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

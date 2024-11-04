@@ -1,6 +1,6 @@
 package com.technoscribers.dailypet.controller;
 
-import com.technoscribers.dailypet.exceptions.IncompleteInfoException;
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.model.AnnouncementModel;
 import com.technoscribers.dailypet.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class AnnouncementController {
     public ResponseEntity<?> editAnnouncement(@RequestBody AnnouncementModel announcementModel) {
         try {
             return ResponseEntity.ok().body(announcementService.editAnnouncement(announcementModel));
-        } catch (IncompleteInfoException e) {
+        } catch (InvalidInfoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -49,7 +49,7 @@ public class AnnouncementController {
         try {
             results = announcementService.getAnnouncementById(announcementId);
             return ResponseEntity.ok().body(results);
-        } catch (IncompleteInfoException e) {
+        } catch (InvalidInfoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 

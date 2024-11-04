@@ -1,5 +1,6 @@
 package com.technoscribers.dailypet.service;
 
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.model.enumeration.RoleName;
 import com.technoscribers.dailypet.repository.RolesRepository;
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 
 /**
  * Registration service - User registrations
- *
  */
 @Service
 public class UserService {
@@ -47,20 +47,20 @@ public class UserService {
         User user = getUser(userModel);
         User savedUser = userRepository.save(user); //JPA in-built query
         //UserModel savedModel = new UserModel(user.getEmail(), RoleName.valueOf(savedUser.getRoles().getName()));
-        if(savedUser!=null)
+        if (savedUser != null)
             userModel.setUserId(savedUser.getId());
-        if(userModel.getRole()==RoleName.SERVICE){
-            DpService dpService =  dpServiceService.getService(userModel.getDpServiceModel());
+        if (userModel.getRole() == RoleName.SERVICE) {
+            DpService dpService = dpServiceService.getService(userModel.getDpServiceModel());
             dpService.setUser(savedUser);
             DpService savedDpS = dpServiceService.save(dpService);
-            if(savedDpS!=null)
+            if (savedDpS != null)
                 userModel.setServiceId(savedDpS.getId());
-        }else{
+        } else {
             //NEED TO CHECK- IF PETWALKER- WHAT DETAILS TO SAVE??
             Person person = personService.getPerson(userModel.getDpPersonModel());
             person.setUser(savedUser);
             Person savedPerson = personService.save(person);
-            if(savedPerson!=null)
+            if (savedPerson != null)
                 userModel.setPersonId(savedPerson.getId());
         }
         return userModel;
@@ -89,11 +89,33 @@ public class UserService {
     }
 
     private List<UserModel> getUserModelFromUser(List<User> results) {
-       return results.stream().map( r->
+        return results.stream().map(r ->
                 new UserModel(r.getEmail(), RoleName.valueOf(r.getRoles().getName()))).collect(Collectors.toList());
     }
 
-    public Optional<User> findById(Long id){
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public UserModel login(UserModel userModel) throws InvalidInfoException {
+        if(userModel.getEmail() == null || userModel.getEmail().isBlank() || userModel.getPassword() == null ||
+                userModel.getPassword().isBlank()) {
+            throw new InvalidInfoException("Invalid data");
+        } else {
+            User user = userRepository.findByEmail(userModel.getEmail()); //Only unique email. So returns only one result
+            if(user==null){
+                userModel.setUserId(null);
+                userModel.setRole(null);
+                throw new InvalidInfoException("Invalid data");
+            }
+            if (user.getPassword().equals(userModel.getPassword())) {
+                userModel.setUserId(user.getId());
+                userModel.setRole(RoleName.valueOf(user.getRoles().getName()));
+                return userModel;
+            }
+            userModel.setUserId(null);
+            userModel.setRole(null);
+            throw new InvalidInfoException("Invalid data");
+        }
     }
 }

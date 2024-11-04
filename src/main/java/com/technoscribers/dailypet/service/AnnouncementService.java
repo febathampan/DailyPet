@@ -1,6 +1,6 @@
 package com.technoscribers.dailypet.service;
 
-import com.technoscribers.dailypet.exceptions.IncompleteInfoException;
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.model.AnnouncementModel;
 import com.technoscribers.dailypet.repository.AnnouncementRepository;
 import com.technoscribers.dailypet.repository.entity.Announcement;
@@ -27,10 +27,10 @@ public class AnnouncementService {
         return models;
     }
 
-    public AnnouncementModel editAnnouncement(AnnouncementModel model) throws IncompleteInfoException {
+    public AnnouncementModel editAnnouncement(AnnouncementModel model) throws InvalidInfoException {
         Optional<User> u = userService.findById(model.getUserId());
         if (u.isEmpty()) {
-            throw new IncompleteInfoException("UserID invalid!");
+            throw new InvalidInfoException("UserID invalid!");
         }
 
         Announcement a = new Announcement(model.getPost(), model.getPosted(), model.getExpire(), model.getIsActive(), u.get());
@@ -53,10 +53,10 @@ public class AnnouncementService {
         return "Success";
     }
 
-    public AnnouncementModel getAnnouncementById(Long announcementId) throws IncompleteInfoException {
+    public AnnouncementModel getAnnouncementById(Long announcementId) throws InvalidInfoException {
         Optional<Announcement> result = announcementRepository.findById(announcementId);
         if(result.isEmpty()){
-            throw new IncompleteInfoException("Invalid announcement id");
+            throw new InvalidInfoException("Invalid announcement id");
         }
         Announcement a = result.get();
         AnnouncementModel model = new AnnouncementModel(a.getId(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId());
