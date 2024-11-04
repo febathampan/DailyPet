@@ -22,6 +22,11 @@ public class AnnouncementController {
         return ResponseEntity.ok().body(results);
     }
 
+    /**
+     * Get announcements for Owner
+     * @param ownerId
+     * @return
+     */
     @GetMapping("/owner")
     public ResponseEntity<?> getAllActiveAnnouncements(@RequestParam Long ownerId) {
         List<AnnouncementModel> results = announcementService.getAllAnnouncements(ownerId);
