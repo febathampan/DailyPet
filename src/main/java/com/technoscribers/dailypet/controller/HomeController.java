@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/dailypet")
 public class HomeController {
 
     @Autowired
@@ -36,7 +36,7 @@ public class HomeController {
      * @return HTTP 200 - Success Responses
      * HTTP 400 - Error Responses
      */
-    @PostMapping("/user")
+    @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserModel userModel) {
         UserModel user = userService.registerUser(userModel);
         if (user != null) {

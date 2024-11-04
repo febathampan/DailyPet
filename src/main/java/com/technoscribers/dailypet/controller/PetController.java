@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/pets")
+@RequestMapping("/pet")
 public class PetController {
 
     @Autowired
     PetProfileService petService;
 
-    @PostMapping("/pet")
+    @PostMapping("/register")
     public ResponseEntity<?> registerPet(@RequestBody PetDetailsModel petDetailsModel){
         try{
             PetDetailsModel savedPet = petService.savePet(petDetailsModel, null);
