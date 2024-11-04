@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -17,17 +16,17 @@ public class Announcement {
     private Long id;
     private String post;
     private String title;
-    private LocalDateTime posted;
+    private LocalDateTime publish;
     private LocalDateTime expire;
     private Boolean isActive;
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    public Announcement(String title, String post, LocalDateTime posted, LocalDateTime expire, Boolean isActive, User owner) {
+    public Announcement(String title, String post, LocalDateTime publish, LocalDateTime expire, Boolean isActive, User owner) {
         this.title = title;
         this.post = post;
-        this.posted = posted;
+        this.publish = publish;
         this.expire = expire;
         this.isActive = isActive;
         this.owner = owner;

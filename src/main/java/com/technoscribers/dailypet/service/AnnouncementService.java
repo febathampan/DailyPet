@@ -23,7 +23,7 @@ public class AnnouncementService {
 
     public List<AnnouncementModel> getAllAnnouncements() {
         List<Announcement> results = announcementRepository.findByIsActive(Boolean.TRUE);
-        List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
         return models;
     }
 
@@ -33,7 +33,7 @@ public class AnnouncementService {
             throw new InvalidInfoException("UserID invalid!");
         }
 
-        Announcement a = new Announcement(model.getTitle(), model.getPost(), model.getPosted(), model.getExpire(), model.getIsActive(), u.get());
+        Announcement a = new Announcement(model.getTitle(), model.getPost(), model.getPublish(), model.getExpire(), model.getIsActive(), u.get());
         if (model.getId() != null && model.getId() > 0) {
             a.setId(model.getId());
         }
@@ -43,8 +43,8 @@ public class AnnouncementService {
     }
 
     public List<AnnouncementModel> getAllAnnouncements(Long ownerId) {
-        List<Announcement> results = announcementRepository.findByIsActiveAndOwnerId(Boolean.TRUE, ownerId);
-        List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        List<Announcement> results = announcementRepository.findByOwnerId(ownerId);
+        List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
         return models;
     }
 
@@ -59,7 +59,7 @@ public class AnnouncementService {
             throw new InvalidInfoException("Invalid announcement id");
         }
         Announcement a = result.get();
-        AnnouncementModel model = new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPosted(), a.getExpire(), a.getIsActive(), a.getOwner().getId());
+        AnnouncementModel model = new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getIsActive(), a.getOwner().getId());
         return model;
     }
 }

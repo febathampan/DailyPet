@@ -1,8 +1,10 @@
 package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
+import com.technoscribers.dailypet.model.DPPersonModel;
 import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.model.enumeration.RoleName;
+import com.technoscribers.dailypet.model.enumeration.ServiceType;
 import com.technoscribers.dailypet.repository.RolesRepository;
 import com.technoscribers.dailypet.repository.UserRepository;
 import com.technoscribers.dailypet.repository.entity.DpService;
@@ -46,17 +48,29 @@ public class UserService {
     public UserModel registerUser(UserModel userModel) {
         User user = getUser(userModel);
         User savedUser = userRepository.save(user); //JPA in-built query
-        //UserModel savedModel = new UserModel(user.getEmail(), RoleName.valueOf(savedUser.getRoles().getName()));
         if (savedUser != null)
             userModel.setUserId(savedUser.getId());
         if (userModel.getRole() == RoleName.SERVICE) {
-            DpService dpService = dpServiceService.getService(userModel.getDpServiceModel());
+            Person savedPerson = null;
+            DpService dpService = null;
+            if (userModel.getServiceType().equals(ServiceType.PETWALKER)) {
+                savedPerson = savePerson(userModel, savedUser);
+                dpService = new DpService();
+                dpService.setPerson(savedPerson);
+                DPPersonModel pm = userModel.getDpPersonModel();
+                dpService.setPinCode(pm.getPincode());
+                dpService.setName(pm.getFName() + " " + pm.getLName());
+                dpService.setPhone(pm.getPhone());
+                dpService.setType(userModel.getServiceType().name());
+            } else {
+                dpService = dpServiceService.getService(userModel.getDpServiceModel());
+            }
             dpService.setUser(savedUser);
             DpService savedDpS = dpServiceService.save(dpService);
-            if (savedDpS != null)
+            if (savedDpS != null) {
                 userModel.setServiceId(savedDpS.getId());
+            }
         } else {
-            //NEED TO CHECK- IF PETWALKER- WHAT DETAILS TO SAVE??
             Person person = personService.getPerson(userModel.getDpPersonModel());
             person.setUser(savedUser);
             Person savedPerson = personService.save(person);
@@ -64,6 +78,13 @@ public class UserService {
                 userModel.setPersonId(savedPerson.getId());
         }
         return userModel;
+    }
+
+    private Person savePerson(UserModel userModel, User savedUser) {
+        Person savedPerson;
+        Person person = personService.getPerson(userModel.getDpPersonModel());
+        person.setUser(savedUser);
+        return personService.save(person);
     }
 
     /**
@@ -98,12 +119,12 @@ public class UserService {
     }
 
     public UserModel login(UserModel userModel) throws InvalidInfoException {
-        if(userModel.getEmail() == null || userModel.getEmail().isBlank() || userModel.getPassword() == null ||
+        if (userModel.getEmail() == null || userModel.getEmail().isBlank() || userModel.getPassword() == null ||
                 userModel.getPassword().isBlank()) {
             throw new InvalidInfoException("Invalid data");
         } else {
             User user = userRepository.findByEmail(userModel.getEmail()); //Only unique email. So returns only one result
-            if(user==null){
+            if (user == null) {
                 userModel.setUserId(null);
                 userModel.setRole(null);
                 throw new InvalidInfoException("Invalid data");
@@ -111,6 +132,9 @@ public class UserService {
             if (user.getPassword().equals(userModel.getPassword())) {
                 userModel.setUserId(user.getId());
                 userModel.setRole(RoleName.valueOf(user.getRoles().getName()));
+                if(user.getRoles().getName().equals(RoleName.SERVICE.name())){
+                    userModel.setServiceType(dpServiceService.getServiceTypeForUser(user));
+                }
                 return userModel;
             }
             userModel.setUserId(null);

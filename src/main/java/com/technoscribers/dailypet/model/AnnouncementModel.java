@@ -13,7 +13,7 @@ public class AnnouncementModel {
     private Long id;
     private String title;
     private String post;
-    private LocalDateTime posted;
+    private LocalDateTime publish;
     private LocalDateTime expire;
     private Boolean isActive;
     private Long userId;

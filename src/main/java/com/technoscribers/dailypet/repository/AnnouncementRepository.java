@@ -15,4 +15,8 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     List<Announcement> findByIsActiveAndOwnerId(Boolean aTrue, Long ownerId);
 
     List<Announcement> findByIsActiveAndExpireLessThan(Boolean flag, LocalDate date);
+
+    List<Announcement> findByIsActiveAndPublishLessThanEqual(Boolean aFalse, LocalDate now);
+
+    List<Announcement> findByOwnerId(Long ownerId);
 }

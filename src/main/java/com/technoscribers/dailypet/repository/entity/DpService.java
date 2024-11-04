@@ -25,6 +25,9 @@ public class DpService {
     @NotNull
     private User user;
 
+    @OneToOne
+    private Person person;
+
     public DpService(String name, String phone, String type, String address, String city, String province, String pinCode) {
         this.name = name;
         this.phone = phone;
