@@ -42,8 +42,24 @@ public class AnnouncementService {
         return model;
     }
 
+    /**
+     * Contains active posts and drafts
+     * @param ownerId
+     * @return
+     */
     public List<AnnouncementModel> getAllAnnouncements(Long ownerId) {
         List<Announcement> results = announcementRepository.findByOwnerId(ownerId);
+        List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        return models;
+    }
+
+    /**
+     * Contains only active posts
+     * @param ownerId
+     * @return
+     */
+    public List<AnnouncementModel> getAnnouncementsForOwnerByActive(Boolean flag, Long ownerId) {
+        List<Announcement> results = announcementRepository.findByIsActiveAndOwnerId(flag, ownerId);
         List<AnnouncementModel> models = results.stream().map(a ->  new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
         return models;
     }

@@ -27,9 +27,30 @@ public class AnnouncementController {
      * @param ownerId
      * @return
      */
-    @GetMapping("/owner")
-    public ResponseEntity<?> getAllActiveAnnouncements(@RequestParam Long ownerId) {
+    @GetMapping("/owner/all")
+    public ResponseEntity<?> getAllAnnouncements(@RequestParam Long ownerId) {
         List<AnnouncementModel> results = announcementService.getAllAnnouncements(ownerId);
+        return ResponseEntity.ok().body(results);
+    }
+    /**
+     * Get active announcements for Owner
+     * @param ownerId
+     * @return
+     */
+    @GetMapping("/owner/active")
+    public ResponseEntity<?> getAllActiveAnnouncements(@RequestParam Long ownerId) {
+        List<AnnouncementModel> results = announcementService.getAnnouncementsForOwnerByActive(Boolean.TRUE, ownerId);
+        return ResponseEntity.ok().body(results);
+    }
+
+    /**
+     * Get active announcements for Owner
+     * @param ownerId
+     * @return
+     */
+    @GetMapping("/owner/draft")
+    public ResponseEntity<?> getAllDraftAnnouncements(@RequestParam Long ownerId) {
+        List<AnnouncementModel> results = announcementService.getAnnouncementsForOwnerByActive(Boolean.FALSE, ownerId);
         return ResponseEntity.ok().body(results);
     }
 

@@ -62,6 +62,9 @@ public class UserService {
                 dpService.setName(pm.getFName() + " " + pm.getLName());
                 dpService.setPhone(pm.getPhone());
                 dpService.setType(userModel.getServiceType().name());
+                dpService.setAddress(pm.getAddress());
+                dpService.setCity(pm.getCity());
+                dpService.setProvince(pm.getProvince());
             } else {
                 dpService = dpServiceService.getService(userModel.getDpServiceModel());
             }
@@ -134,6 +137,8 @@ public class UserService {
                 userModel.setRole(RoleName.valueOf(user.getRoles().getName()));
                 if(user.getRoles().getName().equals(RoleName.SERVICE.name())){
                     userModel.setServiceType(dpServiceService.getServiceTypeForUser(user));
+                    DpService service = dpServiceService.getServiceForUser(user);
+                    userModel.setServiceId(service.getId());
                 }
                 return userModel;
             }

@@ -23,12 +23,13 @@ public class Person {
     private String address;
     private String city;
     private String pincode;
+    private String province;
     private Date dob;
     @OneToOne
     @NotNull
     private User user;
 
-    public Person(String fname, String lname, String phone, String gender, String address, String city, String pincode, Date dob) {
+    public Person(String fname, String lname, String phone, String gender, String address, String city, String province, String pincode, Date dob) {
         this.fname = fname;
         this.lname = lname;
         this.phone = phone;
@@ -36,6 +37,7 @@ public class Person {
         this.address = address;
         this.city = city;
         this.pincode = pincode;
+        this.province = province;
         this.dob = dob;
     }
 }
