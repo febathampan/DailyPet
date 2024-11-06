@@ -1,7 +1,9 @@
 package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
+import com.technoscribers.dailypet.exceptions.UnableToPersistException;
 import com.technoscribers.dailypet.model.DPPersonModel;
+import com.technoscribers.dailypet.model.PasswordResetModel;
 import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.model.enumeration.RoleName;
 import com.technoscribers.dailypet.model.enumeration.ServiceType;
@@ -114,7 +116,7 @@ public class UserService {
 
     private List<UserModel> getUserModelFromUser(List<User> results) {
         return results.stream().map(r ->
-                new UserModel(r.getEmail(), RoleName.valueOf(r.getRoles().getName()))).collect(Collectors.toList());
+                new UserModel(r.getId(), r.getEmail(), RoleName.valueOf(r.getRoles().getName()))).collect(Collectors.toList());
     }
 
     public Optional<User> findById(Long id) {
@@ -146,5 +148,27 @@ public class UserService {
             userModel.setRole(null);
             throw new InvalidInfoException("Invalid data");
         }
+    }
+
+    public UserModel resetPassword(PasswordResetModel resetModel) throws UnableToPersistException {
+        if(resetModel!=null){
+            try{
+                Optional<User> u = userRepository.findById(resetModel.getUserId());
+                if(u.isEmpty()){
+                    throw new InvalidInfoException("Invalid information");
+                }
+                User user = u.get();
+                if(resetModel.getCurrentPwd().equals(user.getPassword())){
+                    user.setPassword(resetModel.getNewPwd());
+                    User saved = userRepository.save(user);
+                    return getUserModelFromUser(List.of(saved)).getFirst();
+                }else{
+                    throw new InvalidInfoException("Invalid information");
+                }
+            }catch (Exception e){
+                throw new UnableToPersistException("Unable to save:"+ e.getMessage());
+            }
+        }
+        throw new UnableToPersistException("Empty data");
     }
 }

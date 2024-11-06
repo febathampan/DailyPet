@@ -1,6 +1,8 @@
 package com.technoscribers.dailypet.controller;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
+import com.technoscribers.dailypet.exceptions.UnableToPersistException;
+import com.technoscribers.dailypet.model.PasswordResetModel;
 import com.technoscribers.dailypet.model.UserModel;
 import com.technoscribers.dailypet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,18 @@ public class HomeController {
             return ResponseEntity.ok().body(user);
 
         } catch (InvalidInfoException e) {
+            return ResponseEntity.ok().body(e.getMessage());
+        }
+
+    }
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetModel resetModel) {
+        UserModel user = null;
+        try {
+            user = userService.resetPassword(resetModel);
+            return ResponseEntity.ok().body(user);
+
+        } catch (UnableToPersistException e) {
             return ResponseEntity.ok().body(e.getMessage());
         }
 

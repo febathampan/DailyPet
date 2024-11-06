@@ -2,6 +2,7 @@ package com.technoscribers.dailypet.model;
 
 import com.technoscribers.dailypet.model.enumeration.RoleName;
 import com.technoscribers.dailypet.model.enumeration.ServiceType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -10,7 +11,9 @@ import lombok.Data;
  */
 @Data
 public class UserModel {
+    @NotNull
     private String email;
+    @NotNull
     private String password;
     private RoleName role;
     private ServiceType serviceType;
@@ -20,7 +23,8 @@ public class UserModel {
     private Long personId;
     private Long userId;
 
-    public UserModel(String email, RoleName role) {
+    public UserModel(Long userId, String email, RoleName role) {
+        this.userId = userId;
         this.email = email;
         this.role = role;
     }
