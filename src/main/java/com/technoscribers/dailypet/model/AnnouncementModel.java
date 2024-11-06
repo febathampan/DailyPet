@@ -15,6 +15,7 @@ public class AnnouncementModel {
     private String post;
     private LocalDateTime publish;
     private LocalDateTime expire;
+    private LocalDateTime createdDate;
     private Boolean isActive; // save as draft has isActive flag false
     private Long userId;
 }

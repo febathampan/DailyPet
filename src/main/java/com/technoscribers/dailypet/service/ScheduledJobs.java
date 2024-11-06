@@ -15,7 +15,7 @@ public class ScheduledJobs {
     @Autowired
     AnnouncementRepository announcementRepository;
    // @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 0/2 0 * * *")
+    //@Scheduled(cron = "0 0/2 0 * * *")
     public void removingExpiredAnnouncements(){
         System.out.println("Running cron");
         List<Announcement> announcementsToPublish = announcementRepository.findByIsActiveAndExpireLessThan(Boolean.TRUE, LocalDate.now());
