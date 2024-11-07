@@ -1,6 +1,7 @@
 package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
+import com.technoscribers.dailypet.model.AppointmentModel;
 import com.technoscribers.dailypet.model.VaccineModel;
 import com.technoscribers.dailypet.repository.PetDetailsRepository;
 import com.technoscribers.dailypet.repository.VaccineRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VaccineService {
@@ -50,4 +52,15 @@ public class VaccineService {
         }
         return savedVaccines;
     }
+
+    public List<VaccineModel> getVaccinesFotPet(Long petId) {
+        List<Vaccine> vaccines = vaccineRepository.findByPetId(petId);
+        return getModelsFromVaccines(vaccines);
     }
+
+    private List<VaccineModel> getModelsFromVaccines(List<Vaccine> vaccines) {
+        return vaccines.stream().map(v -> new VaccineModel(v.getId(), v.getName(), v.getScheduledDate(), v.getPreviousDate(),
+                v.getDescription(), v.getIsActive(), v.getPet().getId())).collect(Collectors.toList());
+
+    }
+}

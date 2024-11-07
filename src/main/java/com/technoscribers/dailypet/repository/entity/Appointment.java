@@ -17,7 +17,7 @@ public class Appointment {
     private String location;
     private Date date;
     private String description;
-    private Boolean isActive;
+    private Boolean isActive; //if isActive- send notification
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private PetDetails pet;

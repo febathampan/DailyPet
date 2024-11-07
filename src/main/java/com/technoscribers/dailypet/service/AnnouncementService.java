@@ -22,7 +22,7 @@ public class AnnouncementService {
     @Autowired
     UserService userService;
 
-    public List<AnnouncementModel> getAllAnnouncements() {
+    public List<AnnouncementModel> getAllActiveAnnouncements() {
         List<Announcement> results = announcementRepository.findByIsActive(Boolean.TRUE);
         List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
         return models;

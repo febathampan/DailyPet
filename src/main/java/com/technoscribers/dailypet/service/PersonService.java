@@ -5,10 +5,12 @@ import com.technoscribers.dailypet.model.enumeration.Sex;
 import com.technoscribers.dailypet.repository.PersonRepository;
 import com.technoscribers.dailypet.repository.entity.DpService;
 import com.technoscribers.dailypet.repository.entity.Person;
+import com.technoscribers.dailypet.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PersonService {
@@ -36,5 +38,9 @@ public class PersonService {
 
     public Person save(Person person) {
         return personRepository.save(person);
+    }
+
+    public Optional<Person> findPersonForUser(User user) {
+        return personRepository.findByUser(user);
     }
 }

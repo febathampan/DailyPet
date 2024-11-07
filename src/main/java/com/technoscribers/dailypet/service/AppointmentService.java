@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -52,5 +53,14 @@ public class AppointmentService {
             savedModels.add(result);
         }
         return savedModels;
+    }
+    public List<AppointmentModel> getAppointmentModels(List<Appointment> appointments){
+        return appointments.stream().map( a-> new AppointmentModel(a.getId(), a.getTitle(), a.getLocation(), a.getDate(), a.getDescription(), a.getIsActive(), a.getPet().getId())).collect(Collectors.toList());
+    }
+
+
+    public List<AppointmentModel> getAppointmentsFotPet(Long petId) {
+        List<Appointment> appointments = appointmentRepository.findByPetId(petId);
+        return getAppointmentModels(appointments);
     }
 }

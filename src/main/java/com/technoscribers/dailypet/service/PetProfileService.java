@@ -2,7 +2,11 @@ package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
+import com.technoscribers.dailypet.model.AppointmentModel;
+import com.technoscribers.dailypet.model.MedicationModel;
 import com.technoscribers.dailypet.model.PetDetailsModel;
+import com.technoscribers.dailypet.model.VaccineModel;
+import com.technoscribers.dailypet.model.enumeration.WeightMetrics;
 import com.technoscribers.dailypet.repository.BreedRepository;
 import com.technoscribers.dailypet.repository.PetDetailsRepository;
 import com.technoscribers.dailypet.repository.UserRepository;
@@ -17,7 +21,9 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PetProfileService {
@@ -96,4 +102,21 @@ public class PetProfileService {
     public Optional<PetDetails> findById(Long petId) {
         return petRepository.findById(petId);
     }
+
+    public List<PetDetailsModel> getPetDetailsForUser(User user) {
+        List<PetDetails> petDetails = petRepository.findByOwner(user);
+        List<PetDetailsModel> petDetailsModels = petDetails.stream().map( p -> {
+            PetDetailsModel model=new PetDetailsModel(p.getId(), p.getName(), p.getDob(), p.getGender(),
+                    p.getIdNo(), p.getWeight(), WeightMetrics.valueOf(p.getWeightUnit()),p.getBreed().getId(), p.getOwner().getId());
+             List<AppointmentModel> appointments = appointmentService.getAppointmentsFotPet(p.getId());
+             List<VaccineModel> vaccines = vaccineService.getVaccinesFotPet(p.getId());
+             List<MedicationModel> medications = medicationService.getMedicationsFotPet(p.getId());
+             model.setAppointments(appointments);
+             model.setVaccines(vaccines);
+             model.setMedications(medications);
+             return model;
+        }).collect(Collectors.toList());
+        return petDetailsModels;
+    }
+
 }

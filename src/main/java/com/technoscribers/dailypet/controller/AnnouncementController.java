@@ -18,7 +18,7 @@ public class AnnouncementController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllActiveAnnouncements() {
-        List<AnnouncementModel> results = announcementService.getAllAnnouncements();
+        List<AnnouncementModel> results = announcementService.getAllActiveAnnouncements();
         return ResponseEntity.ok().body(results);
     }
 

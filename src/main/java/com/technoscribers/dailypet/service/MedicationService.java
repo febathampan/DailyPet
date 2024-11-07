@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicationService {
@@ -54,4 +55,13 @@ public class MedicationService {
         return medicationModel;
     }
 
+    public List<MedicationModel> getMedicationsFotPet(Long petId) {
+        List<Medication> medications = medicationRepository.findByPetId(petId);
+        return getModelsFromMedications(medications);
+    }
+
+    private List<MedicationModel> getModelsFromMedications(List<Medication> medications) {
+        return medications.stream().map(m -> new MedicationModel(m.getId(), m.getName(), m.getStart(), m.getEnd(),
+                m.getIsActive(), m.getPet().getId())).collect(Collectors.toList());
+    }
 }

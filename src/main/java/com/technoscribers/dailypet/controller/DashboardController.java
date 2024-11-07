@@ -19,10 +19,16 @@ public class DashboardController {
     DashboardService dashboardService;
 
     @GetMapping("/user/dashboard")
-    public ResponseEntity<UserDashboardModel> getUserDashboard(@RequestParam Long userId) {
-        UserDashboardModel dash = dashboardService.getDashboardForUser(userId);
+    public ResponseEntity<?> getUserDashboard(@RequestParam Long userId) {
+        UserDashboardModel dash = null;
+        try {
+            dash = dashboardService.getDashboardForUser(userId);
+        } catch (InvalidInfoException e) {
+            return ResponseEntity.badRequest().body("Invalid info:" + e.getLocalizedMessage());
+        }
         return ResponseEntity.ok().body(dash);
     }
+
     @GetMapping("/service/dashboard")
     public ResponseEntity<?> getServiceDashboard(@RequestParam Long serviceId) {
         ServiceDashboardModel dash = null;
@@ -30,7 +36,7 @@ public class DashboardController {
             dash = dashboardService.getDashboardForService(serviceId);
             return ResponseEntity.ok().body(dash);
         } catch (InvalidInfoException e) {
-            return ResponseEntity.badRequest().body("Invalid info:"+ e.getLocalizedMessage());
+            return ResponseEntity.badRequest().body("Invalid info:" + e.getLocalizedMessage());
 
         }
     }
