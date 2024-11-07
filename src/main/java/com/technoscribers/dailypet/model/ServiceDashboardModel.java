@@ -13,8 +13,12 @@ public class ServiceDashboardModel {
     private Long personId;
     private String name;
     private RoleName role;
+    private String phone;
+    private String address;
+    private String city;
+    private String province;
+    private String pinCode;
     private ServiceType serviceType;
     private List<AnnouncementModel> posts;
-    private DPServiceModel serviceDetails;
     private DPPersonModel petwalkerDetails;
 }

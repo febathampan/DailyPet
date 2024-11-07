@@ -66,14 +66,19 @@ public class DashboardService {
         User user = userResult.get();
         dashboardModel.setUserId(dpService.getUser().getId());
         dashboardModel.setName(dpService.getName());
+        dashboardModel.setPhone(dpService.getPhone());
+        dashboardModel.setAddress(dpService.getAddress());
+        dashboardModel.setCity(dpService.getCity());
+        dashboardModel.setProvince(dpService.getProvince());
+        dashboardModel.setPinCode(dpService.getPinCode());
         dashboardModel.setRole(RoleName.valueOf(user.getRoles().getName()));
         dashboardModel.setServiceType(ServiceType.valueOf(dpService.getType()));
         dashboardModel.setServiceId(dpService.getId());
         if (ServiceType.valueOf(dpService.getType()).equals(ServiceType.PETWALKER)) {
             dashboardModel.setPetwalkerDetails(getPwPersonModel(dpService.getPerson()));
+            dashboardModel.setPersonId(dpService.getPerson().getId());
         }
-        dashboardModel.setServiceDetails(getServiceDetailsFromEntity(dpService));
-        dashboardModel.setPosts(announcementService.getAllActiveAnnouncements());
+        dashboardModel.setPosts(announcementService.getAllAnnouncements(dpService.getUser().getId()));
         return dashboardModel;
     }
 
