@@ -64,7 +64,7 @@ public class DashboardService {
         DpService dpService = serviceResult.get();
         Optional<User> userResult = getUserFromId(dpService.getUser().getId());
         User user = userResult.get();
-
+        dashboardModel.setUserId(dpService.getUser().getId());
         dashboardModel.setName(dpService.getName());
         dashboardModel.setRole(RoleName.valueOf(user.getRoles().getName()));
         dashboardModel.setServiceType(ServiceType.valueOf(dpService.getType()));

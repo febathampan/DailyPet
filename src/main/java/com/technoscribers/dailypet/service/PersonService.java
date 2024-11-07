@@ -43,4 +43,8 @@ public class PersonService {
     public Optional<Person> findPersonForUser(User user) {
         return personRepository.findByUser(user);
     }
+
+    public Optional<Person> getPerson(Long personId) {
+        return personRepository.findById(personId);
+    }
 }
