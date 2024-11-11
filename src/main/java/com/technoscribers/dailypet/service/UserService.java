@@ -142,6 +142,7 @@ public class UserService {
                     userModel.setServiceType(dpServiceService.getServiceTypeForUser(user));
                     DpService service = dpServiceService.getServiceForUser(user);
                     userModel.setServiceId(service.getId());
+                    userModel.setPersonId(service.getPerson() == null ? null : service.getPerson().getId());
                 }
                 return userModel;
             }
