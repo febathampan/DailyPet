@@ -14,4 +14,5 @@ public class DPServiceModel {
     private String city;
     private String province;
     private String pinCode;
+    private String imageURL;
 }

@@ -13,4 +13,5 @@ public class ProfileModel {
     private String name;
     private String lName;
     private String phone;
+    private String imageURL;
 }

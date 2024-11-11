@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 //Table - Person
 public class DpService {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String phone;
@@ -21,6 +21,7 @@ public class DpService {
     private String city;
     private String province;
     private String pinCode;
+    private String imageURL;
     @OneToOne
     @NotNull
     private User user;
@@ -28,7 +29,7 @@ public class DpService {
     @OneToOne
     private Person person;
 
-    public DpService(String name, String phone, String type, String address, String city, String province, String pinCode) {
+    public DpService(String name, String phone, String type, String address, String city, String province, String pinCode, String imageURL) {
         this.name = name;
         this.phone = phone;
         this.type = type;
@@ -36,5 +37,6 @@ public class DpService {
         this.city = city;
         this.province = province;
         this.pinCode = pinCode;
+        this.imageURL = imageURL;
     }
 }

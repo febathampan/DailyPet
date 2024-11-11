@@ -26,10 +26,12 @@ public class PetDetails {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-    @OneToOne
-    private Images image;
+    private String imageURL;
 
-    public PetDetails(String name, Date dob, String gender, String idNo, Float weight,String weightUnit, Breed breed, User owner) {
+   /* @OneToOne
+    private Images image;*/
+
+    public PetDetails(String name, Date dob, String gender, String idNo, Float weight,String weightUnit, Breed breed, User owner, String imageURL) {
         this.name = name;
         this.dob = dob;
         this.gender = gender;
@@ -38,6 +40,7 @@ public class PetDetails {
         this.breed = breed;
         this.owner = owner;
         this.weightUnit = weightUnit;
+        this.imageURL = imageURL;
     }
 
 }

@@ -22,7 +22,7 @@ public class PetDetailsModel {
     private WeightMetrics unit;
     private Long breedId;
     private Long ownerId;
-    //private MultipartFile image; //Is this possible?
+    private String imageURL;
     private List<AppointmentModel> appointments;
     private List<VaccineModel> vaccines;
     private List<MedicationModel> medications;

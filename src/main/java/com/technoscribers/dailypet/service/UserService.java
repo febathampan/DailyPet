@@ -67,6 +67,7 @@ public class UserService {
                 dpService.setAddress(pm.getAddress());
                 dpService.setCity(pm.getCity());
                 dpService.setProvince(pm.getProvince());
+                dpService.setImageURL(pm.getImageURL());
             } else {
                 dpService = dpServiceService.getService(userModel.getDpServiceModel());
             }

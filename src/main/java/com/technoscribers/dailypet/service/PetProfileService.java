@@ -68,7 +68,7 @@ public class PetProfileService {
                 throw new InvalidInfoException("Unable to find user with ID: " + model.getOwnerId());
             }
             PetDetails details = new PetDetails(model.getName(), model.getDob(), model.getGender(), model.getIdNo(),
-                    model.getWeight(), model.getUnit().name(), breed.get(), user.get());
+                    model.getWeight(), model.getUnit().name(), breed.get(), user.get(), model.getImageURL());
             PetDetails savedDetails = petRepository.save(details);
             if (savedDetails != null) {
                 if (image != null) {

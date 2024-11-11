@@ -31,7 +31,7 @@ public class DpServiceService {
         if (dpServiceModel != null) {
             dpService = new DpService(dpServiceModel.getName(), dpServiceModel.getPhone(),
                     dpServiceModel.getType().name(), dpServiceModel.getAddress(), dpServiceModel.getCity(),
-                    dpServiceModel.getProvince(), dpServiceModel.getPinCode());
+                    dpServiceModel.getProvince(), dpServiceModel.getPinCode(), dpServiceModel.getImageURL());
         }
         return dpService;
     }
@@ -41,7 +41,7 @@ public class DpServiceService {
         if (dpService != null) {
             dpServiceModel = new DPServiceModel(dpService.getName(), dpService.getPhone(),
                     ServiceType.valueOf(dpService.getType()), dpService.getAddress(), dpService.getCity(),
-                    dpService.getProvince(), dpService.getPinCode());
+                    dpService.getProvince(), dpService.getPinCode(), dpService.getImageURL());
         }
         return dpServiceModel;
     }
@@ -73,6 +73,7 @@ public class DpServiceService {
         DpService service = optService.get();
         service.setPhone(profileModel.getPhone());
         service.setName(profileModel.getName());
+        service.setImageURL(profileModel.getImageURL());
         if(ServiceType.valueOf(service.getType()).equals(ServiceType.PETWALKER)){
             Optional<Person> optPerson = personService.getPerson(profileModel.getPwPersonId());
             if(optPerson.isEmpty()){
@@ -82,6 +83,7 @@ public class DpServiceService {
             person.setPhone(profileModel.getPhone());
             person.setFname(profileModel.getName());
             person.setLname(profileModel.getLName());
+            person.setImageURL(person.getImageURL());
             personService.save(person);
         }
         dpServiceRepository.save(service);

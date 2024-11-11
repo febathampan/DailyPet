@@ -19,6 +19,7 @@ public class ServiceDashboardModel {
     private String province;
     private String pinCode;
     private ServiceType serviceType;
+    private String imageURL;
     private List<AnnouncementModel> posts;
     private DPPersonModel petwalkerDetails;
 }

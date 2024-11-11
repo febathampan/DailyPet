@@ -22,7 +22,7 @@ public class PersonService {
         Person person = null;
         if (model != null) {
             person = new Person(model.getFName(), model.getLName(), model.getPhone(), model.getGender().name(),
-                    model.getAddress(), model.getCity(), model.getProvince(), model.getPincode(), model.getDob());
+                    model.getAddress(), model.getCity(), model.getProvince(), model.getPincode(), model.getDob(), model.getImageURL());
         }
         return person;
     }
@@ -31,7 +31,7 @@ public class PersonService {
         DPPersonModel model = null;
         if (person != null) {
             model = new DPPersonModel(person.getId(), person.getFname(), person.getLname(), person.getPhone(), Sex.valueOf(person.getGender()),
-                    person.getAddress(), person.getCity(),person.getProvince(), person.getPincode(), person.getDob());
+                    person.getAddress(), person.getCity(),person.getProvince(), person.getPincode(), person.getDob(),person.getImageURL());
         }
         return model;
     }

@@ -24,12 +24,13 @@ public class Person {
     private String city;
     private String pincode;
     private String province;
+    private String imageURL;
     private Date dob;
     @OneToOne
     @NotNull
     private User user;
 
-    public Person(String fname, String lname, String phone, String gender, String address, String city, String province, String pincode, Date dob) {
+    public Person(String fname, String lname, String phone, String gender, String address, String city, String province, String pincode, Date dob, String imageURL) {
         this.fname = fname;
         this.lname = lname;
         this.phone = phone;
@@ -39,5 +40,6 @@ public class Person {
         this.pincode = pincode;
         this.province = province;
         this.dob = dob;
+        this.imageURL = imageURL;
     }
 }

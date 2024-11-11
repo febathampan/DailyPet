@@ -74,6 +74,7 @@ public class DashboardService {
         dashboardModel.setRole(RoleName.valueOf(user.getRoles().getName()));
         dashboardModel.setServiceType(ServiceType.valueOf(dpService.getType()));
         dashboardModel.setServiceId(dpService.getId());
+        dashboardModel.setImageURL(dpService.getImageURL());
         if (ServiceType.valueOf(dpService.getType()).equals(ServiceType.PETWALKER)) {
             dashboardModel.setPetwalkerDetails(getPwPersonModel(dpService.getPerson()));
             dashboardModel.setPersonId(dpService.getPerson().getId());

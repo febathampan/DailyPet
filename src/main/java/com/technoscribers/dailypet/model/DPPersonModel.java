@@ -19,5 +19,6 @@ public class DPPersonModel {
     private String province;
     private String pincode;
     private Date dob;
+    private String imageURL;
 
 }
