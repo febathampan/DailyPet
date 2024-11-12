@@ -21,13 +21,17 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private PetDetails pet;
+    private String startTime;
+    private String endTime;
 
-    public Appointment(String title, String location, Date date, String description, Boolean isActive, PetDetails pet) {
+    public Appointment(String title, String location, Date date, String description, Boolean isActive, PetDetails pet, String startTime, String endTime) {
         this.title = title;
         this.location = location;
         this.date = date;
         this.description = description;
         this.isActive = isActive;
         this.pet = pet;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }

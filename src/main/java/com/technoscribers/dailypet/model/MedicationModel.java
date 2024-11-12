@@ -16,4 +16,5 @@ public class MedicationModel {
     private Date end;
     private Boolean isActive;
     private Long petId;
+    private String dosageInstructions;
 }

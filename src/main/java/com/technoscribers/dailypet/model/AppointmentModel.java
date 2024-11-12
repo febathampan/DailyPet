@@ -17,4 +17,6 @@ public class AppointmentModel {
     private String description;
     private Boolean isActive;
     private Long petId;
+    private String startTime;
+    private String endTime;
 }

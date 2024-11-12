@@ -44,7 +44,7 @@ public class MedicationService {
         }
 
         Medication medication = new Medication(medicationModel.getName(), medicationModel.getStart(), medicationModel.getEnd(),
-                Boolean.TRUE, petDetails.get());
+                Boolean.TRUE, petDetails.get(), medicationModel.getDosageInstructions());
 
         Medication m = medicationRepository.save(medication);
         try {
@@ -62,6 +62,6 @@ public class MedicationService {
 
     private List<MedicationModel> getModelsFromMedications(List<Medication> medications) {
         return medications.stream().map(m -> new MedicationModel(m.getId(), m.getName(), m.getStart(), m.getEnd(),
-                m.getIsActive(), m.getPet().getId())).collect(Collectors.toList());
+                m.getIsActive(), m.getPet().getId(), m.getDosageInstructions())).collect(Collectors.toList());
     }
 }

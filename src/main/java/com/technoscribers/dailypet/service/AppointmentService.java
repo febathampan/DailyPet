@@ -35,7 +35,7 @@ public class AppointmentService {
         }
 
         Appointment appointment = new Appointment(model.getTitle(), model.getLocation(), model.getDate(), model.getDescription(),
-                Boolean.TRUE, petDetails.get());
+                Boolean.TRUE, petDetails.get(), model.getStartTime(), model.getEndTime());
 
         Appointment app = appointmentRepository.save(appointment);
         try {
@@ -55,7 +55,7 @@ public class AppointmentService {
         return savedModels;
     }
     public List<AppointmentModel> getAppointmentModels(List<Appointment> appointments){
-        return appointments.stream().map( a-> new AppointmentModel(a.getId(), a.getTitle(), a.getLocation(), a.getDate(), a.getDescription(), a.getIsActive(), a.getPet().getId())).collect(Collectors.toList());
+        return appointments.stream().map( a-> new AppointmentModel(a.getId(), a.getTitle(), a.getLocation(), a.getDate(), a.getDescription(), a.getIsActive(), a.getPet().getId(), a.getStartTime(), a.getEndTime())).collect(Collectors.toList());
     }
 
 
