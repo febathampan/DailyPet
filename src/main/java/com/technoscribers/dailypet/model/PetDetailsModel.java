@@ -27,7 +27,7 @@ public class PetDetailsModel {
     private List<VaccineModel> vaccines;
     private List<MedicationModel> medications;
 
-    public PetDetailsModel(Long id, String name, Date dob, String gender, String idNo, Float weight, WeightMetrics unit, Long breedId, Long ownerId) {
+    public PetDetailsModel(Long id, String name, Date dob, String gender, String idNo, Float weight, WeightMetrics unit, Long breedId, Long ownerId, String imageURL) {
         this.id = id;
         this.name = name;
         this.dob = dob;
@@ -37,5 +37,6 @@ public class PetDetailsModel {
         this.unit = unit;
         this.breedId = breedId;
         this.ownerId = ownerId;
+        this.imageURL = imageURL;
     }
 }

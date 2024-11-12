@@ -49,15 +49,15 @@ public class PetProfileService {
     @Autowired
     VaccineService vaccineService;
 
-    public PetDetailsModel savePet(PetDetailsModel model, MultipartFile image) throws InvalidInfoException, UnableToPersistException {
+    public PetDetailsModel savePet(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         //save Pet
-        PetDetails details = savePetDetailsFromModel(model, image);
+        PetDetails details = savePetDetailsFromModel(model);
         //save Image
         model.setId(details.getId());
         return model;
     }
 
-    private PetDetails savePetDetailsFromModel(PetDetailsModel model, MultipartFile image) throws InvalidInfoException, UnableToPersistException {
+    private PetDetails savePetDetailsFromModel(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         if (model != null) {
             Optional<Breed> breed = breedRepository.findById(model.getBreedId());
             Optional<User> user = userRepository.findById(model.getOwnerId());
@@ -71,18 +71,6 @@ public class PetProfileService {
                     model.getWeight(), model.getUnit().name(), breed.get(), user.get(), model.getImageURL());
             PetDetails savedDetails = petRepository.save(details);
             if (savedDetails != null) {
-                if (image != null) {
-                    try {
-                        byte[] fileBytes = image.getBytes();
-                        Blob imgBlob = new SerialBlob(fileBytes);
-                        imageService.saveImage(imgBlob, savedDetails);
-                    } catch (IOException e) {
-                        throw new UnableToPersistException("Unable to save pet details" + e.getMessage());
-
-                    } catch (SQLException e) {
-                        throw new UnableToPersistException("Unable to save pet details" + e.getMessage());
-                    }
-                }
 
                 if (!model.getAppointments().isEmpty()) {
                     appointmentService.saveAppointmentForPet(model.getAppointments(), Optional.of(savedDetails));
@@ -107,7 +95,7 @@ public class PetProfileService {
         List<PetDetails> petDetails = petRepository.findByOwner(user);
         List<PetDetailsModel> petDetailsModels = petDetails.stream().map( p -> {
             PetDetailsModel model=new PetDetailsModel(p.getId(), p.getName(), p.getDob(), p.getGender(),
-                    p.getIdNo(), p.getWeight(), WeightMetrics.valueOf(p.getWeightUnit()),p.getBreed().getId(), p.getOwner().getId());
+                    p.getIdNo(), p.getWeight(), WeightMetrics.valueOf(p.getWeightUnit()),p.getBreed().getId(), p.getOwner().getId(), p.getImageURL());
              List<AppointmentModel> appointments = appointmentService.getAppointmentsFotPet(p.getId());
              List<VaccineModel> vaccines = vaccineService.getVaccinesFotPet(p.getId());
              List<MedicationModel> medications = medicationService.getMedicationsFotPet(p.getId());

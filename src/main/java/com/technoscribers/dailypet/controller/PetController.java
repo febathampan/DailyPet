@@ -18,7 +18,7 @@ public class PetController {
     @PostMapping("/register")
     public ResponseEntity<?> registerPet(@RequestBody PetDetailsModel petDetailsModel){
         try{
-            PetDetailsModel savedPet = petService.savePet(petDetailsModel, null);
+            PetDetailsModel savedPet = petService.savePet(petDetailsModel);
             return ResponseEntity.ok().body(savedPet);
         }catch (InvalidInfoException | UnableToPersistException e){
             return ResponseEntity.badRequest().body(e.getMessage());
