@@ -49,6 +49,9 @@ public class PetProfileService {
     @Autowired
     VaccineService vaccineService;
 
+    @Autowired
+    BreedService breedService;
+
     public PetDetailsModel savePet(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         //save Pet
         PetDetails details = savePetDetailsFromModel(model);
@@ -95,7 +98,7 @@ public class PetProfileService {
         List<PetDetails> petDetails = petRepository.findByOwner(user);
         List<PetDetailsModel> petDetailsModels = petDetails.stream().map( p -> {
             PetDetailsModel model=new PetDetailsModel(p.getId(), p.getName(), p.getDob(), p.getGender(),
-                    p.getIdNo(), p.getWeight(), WeightMetrics.valueOf(p.getWeightUnit()),p.getBreed().getId(), p.getOwner().getId(), p.getImageURL());
+                    p.getIdNo(), p.getWeight(), WeightMetrics.valueOf(p.getWeightUnit()),p.getBreed().getId(), p.getOwner().getId(), p.getImageURL(), breedService.getModel(p.getBreed()));
              List<AppointmentModel> appointments = appointmentService.getAppointmentsFotPet(p.getId());
              List<VaccineModel> vaccines = vaccineService.getVaccinesFotPet(p.getId());
              List<MedicationModel> medications = medicationService.getMedicationsFotPet(p.getId());
