@@ -58,6 +58,9 @@ jobs:
         with:
           name: java-app
 
+      - name: Verify downloaded files
+        run: ls -alh
+        
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -71,4 +74,4 @@ jobs:
         with:
           app-name: 'dailypet'  # Your Azure Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Publish profile from Azure portal
-          package: '${{ github.workspace }}/target/dailypet-0.0.1-SNAPSHOT.jar'
+          package: './target/dailypet-0.0.1-SNAPSHOT.jar'
