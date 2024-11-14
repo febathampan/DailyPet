@@ -34,6 +34,9 @@ jobs:
       - name: List contents of target directory
         run: ls -alh target/
 
+      - name: List contents of the ABSOLUTE target directory
+        run: ls -alh ${{ github.workspace }}/target/
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
