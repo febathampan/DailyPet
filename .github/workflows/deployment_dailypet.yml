@@ -64,13 +64,6 @@ jobs:
 
       - name: Verify downloaded files
         run: ls -alh
-        
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_15A9C2CB926648DBB6A7A876F7EDB9A2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2AD24E80F04E45AFAE8DC521681C4E71 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_37E62394BE914B15BE81EB1D1D18843D }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
