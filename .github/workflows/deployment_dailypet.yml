@@ -62,7 +62,7 @@ jobs:
           name: java-app
 
       - name: List contents of the downloaded artifact directory
-        run: ls -alh ${{ github.workspace }}/java-app
+        run: ls -alh ${{ github.workspace }}
 
       - name: Verify downloaded files
         run: ls -alh
