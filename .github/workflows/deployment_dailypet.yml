@@ -25,6 +25,12 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: Print current directory
+        run: pwd
+
+      - name: List contents of the project root
+        run: ls -alh
+
       - name: List contents of target directory
         run: ls -alh target/
 
