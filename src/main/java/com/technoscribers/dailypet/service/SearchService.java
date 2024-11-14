@@ -1,6 +1,7 @@
 package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
+import com.technoscribers.dailypet.model.PWAvailabilityModel;
 import com.technoscribers.dailypet.model.SearchRequest;
 import com.technoscribers.dailypet.model.ServiceSearchDetailModel;
 import com.technoscribers.dailypet.model.ServiceSearchModel;
@@ -8,6 +9,7 @@ import com.technoscribers.dailypet.model.enumeration.SearchFilter;
 import com.technoscribers.dailypet.model.enumeration.ServiceType;
 import com.technoscribers.dailypet.repository.DpServiceRepository;
 import com.technoscribers.dailypet.repository.entity.DpService;
+import com.technoscribers.dailypet.repository.entity.PWAvailability;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -59,8 +61,14 @@ public class SearchService {
 
     public List<ServiceSearchModel> search(SearchRequest request) {
         List<DpService> services = dpServiceRepository.findAll(searchSpec(request));
-        List<ServiceSearchModel> models = services.stream().map(s -> new ServiceSearchModel(s.getId(), s.getName(),
-                s.getPhone(), s.getAddress(), s.getImageURL(), s.getType())).collect(Collectors.toList());
+        List<ServiceSearchModel> models = services.stream().map(s -> {
+            List<PWAvailabilityModel> availabilityModels = new ArrayList<>();
+            if(s.getType().equals(ServiceType.PETWALKER.name())){
+                availabilityModels.addAll(pwService.getAvailability(s.getId()));
+            }
+            ServiceSearchModel  m = new ServiceSearchModel(s.getId(), s.getName(),s.getPhone(), s.getAddress(), s.getImageURL(), s.getType(), availabilityModels);
+            return m;
+        }).collect(Collectors.toList());
         return models;
     }
 
@@ -74,7 +82,7 @@ public class SearchService {
             throw new InvalidInfoException("Invalid search info");
         }
         ServiceSearchModel result = services.stream().map(s -> new ServiceSearchModel(s.getId(), s.getName(),
-                s.getPhone(), s.getAddress(), s.getImageURL(), s.getType())).findFirst().get();//since search is with id, there will only be one result
+                s.getPhone(), s.getAddress(), s.getImageURL(), s.getType(), null)).findFirst().get();//since search is with id, there will only be one result
 
         ServiceSearchDetailModel detailModel = new ServiceSearchDetailModel();
         detailModel.setService(result);
