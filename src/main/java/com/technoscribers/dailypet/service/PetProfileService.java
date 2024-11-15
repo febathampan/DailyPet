@@ -72,6 +72,9 @@ public class PetProfileService {
             }
             PetDetails details = new PetDetails(model.getName(), model.getDob(), model.getGender(), model.getIdNo(),
                     model.getWeight(), model.getUnit().name(), breed.get(), user.get(), model.getImageURL());
+            if(model.getId()!=null && model.getId()>0){
+                details.setId(model.getId());
+            }
             PetDetails savedDetails = petRepository.save(details);
             if (savedDetails != null) {
 
