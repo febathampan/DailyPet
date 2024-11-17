@@ -54,6 +54,17 @@ public class AppointmentService {
         }
         return savedModels;
     }
+
+
+    public List<AppointmentModel> editAppointmentForPet(List<AppointmentModel> models, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        //Delete previous appointments
+        List<Appointment> prevAppointments = appointmentRepository.findByPetIdAndIsActiveIsTrue(petDetails.get().getId());
+        appointmentRepository.deleteAll(prevAppointments);
+
+        //Save appointments
+        return saveAppointmentForPet(models, petDetails);
+    }
+    
     public List<AppointmentModel> getAppointmentModels(List<Appointment> appointments){
         return appointments.stream().map( a-> new AppointmentModel(a.getId(), a.getTitle(), a.getLocation(), a.getDate(), a.getDescription(), a.getIsActive(), a.getPet().getId(), a.getStartTime(), a.getEndTime())).collect(Collectors.toList());
     }

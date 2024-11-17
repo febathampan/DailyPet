@@ -62,6 +62,7 @@ public class PetProfileService {
 
     private PetDetails savePetDetailsFromModel(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         if (model != null) {
+            Boolean isEdit =(model.getId()!=null && model.getId()>0)? true :false;
             Optional<Breed> breed = breedRepository.findById(model.getBreedId());
             Optional<User> user = userRepository.findById(model.getOwnerId());
             if (breed.isEmpty()) {
@@ -72,11 +73,11 @@ public class PetProfileService {
             }
             PetDetails details = new PetDetails(model.getName(), model.getDob(), model.getGender(), model.getIdNo(),
                     model.getWeight(), model.getUnit().name(), breed.get(), user.get(), model.getImageURL());
-            if(model.getId()!=null && model.getId()>0){
+            if(isEdit){
                 details.setId(model.getId());
             }
             PetDetails savedDetails = petRepository.save(details);
-            if (savedDetails != null) {
+            if ((savedDetails != null)&& !isEdit) {
 
                 if (!model.getAppointments().isEmpty()) {
                     appointmentService.saveAppointmentForPet(model.getAppointments(), Optional.of(savedDetails));
@@ -87,8 +88,14 @@ public class PetProfileService {
                 if (!model.getMedications().isEmpty()) {
                     medicationService.saveMedicationForPet(model.getMedications(), Optional.of(savedDetails));
                 }
-                return savedDetails;
+            } else {
+                appointmentService.editAppointmentForPet(model.getAppointments(), Optional.of(savedDetails));
+                vaccineService.editVaccineForPet(model.getVaccines(), Optional.of(savedDetails));
+                medicationService.saveMedicationForPet(model.getMedications(), Optional.of(savedDetails));
+
             }
+            return savedDetails;
+
         }
         throw new InvalidInfoException("Pet details incomplete!");
     }

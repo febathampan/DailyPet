@@ -18,7 +18,7 @@ public class Vaccine {
     private Date scheduledDate;
     private Date previousDate;
     private String description;
-    private Boolean isActive;
+    private Boolean isActive; //send notification if isActive true
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private PetDetails pet;
