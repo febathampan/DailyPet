@@ -23,6 +23,7 @@ public class Announcement {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
+    private String imageURL; //For petLost
 
     public Announcement(String title, String post, LocalDateTime publish, LocalDateTime expire,LocalDateTime createdDate, Boolean isActive, User owner) {
         this.title = title;

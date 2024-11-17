@@ -18,4 +18,5 @@ public class AnnouncementModel {
     private LocalDateTime createdDate;
     private Boolean isActive; // save as draft has isActive flag false
     private Long userId;
+    private String imageURL;
 }
