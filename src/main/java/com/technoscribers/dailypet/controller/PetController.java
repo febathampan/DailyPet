@@ -2,11 +2,14 @@ package com.technoscribers.dailypet.controller;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
+import com.technoscribers.dailypet.model.NotificationModel;
 import com.technoscribers.dailypet.model.PetDetailsModel;
 import com.technoscribers.dailypet.service.PetProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/pet")
@@ -34,5 +37,11 @@ public class PetController {
             return ResponseEntity.badRequest().body("Failed");
         }
         return ResponseEntity.ok().body(alertActive?"Success": "Failed");
+    }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<List<NotificationModel>> getNotifications(@RequestParam Long ownerId) throws InvalidInfoException {
+        List<NotificationModel> models = petService.getNotifications(ownerId);
+        return ResponseEntity.ok().body(models);
     }
 }
