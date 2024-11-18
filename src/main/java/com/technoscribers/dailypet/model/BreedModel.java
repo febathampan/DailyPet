@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class BreedModel {
     private Long id;
-    private Integer lifeSpan;
+    private String lifeSpan;
     private String temperament;
     private String name;
     private String typeOfPet;

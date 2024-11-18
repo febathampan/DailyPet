@@ -12,9 +12,10 @@ public class Breed {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Integer lifeSpan;
+    private String lifeSpan;
     private String temperament;
     private String description;
+    private String breedName;
 
     @ManyToOne
     @NotNull
