@@ -34,8 +34,16 @@ public class MedicationService {
         return medications;
     }
 
+    public List<MedicationModel> editMedicationForPet(List<MedicationModel> medicationModels, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        //Delete previous medication
+        List<Medication> prevMedications = medicationRepository.findByPetIdAndIsActiveIsTrue(petDetails.get().getId());
+        medicationRepository.deleteAll(prevMedications);
+
+        return saveMedicationForPet(medicationModels, petDetails);
+    }
+
     public MedicationModel saveMedicationForPet(MedicationModel medicationModel, Optional<PetDetails> petDetails) throws UnableToPersistException {
-        if(petDetails.isEmpty()) {
+        if (petDetails.isEmpty()) {
             //Assuming incoming model has petDetails id
             petDetails = petDetailsRepository.findById(medicationModel.getPetId());
         }

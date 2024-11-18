@@ -5,6 +5,7 @@ import com.technoscribers.dailypet.model.AppointmentModel;
 import com.technoscribers.dailypet.model.VaccineModel;
 import com.technoscribers.dailypet.repository.PetDetailsRepository;
 import com.technoscribers.dailypet.repository.VaccineRepository;
+import com.technoscribers.dailypet.repository.entity.Appointment;
 import com.technoscribers.dailypet.repository.entity.PetDetails;
 import com.technoscribers.dailypet.repository.entity.Vaccine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,14 @@ public class VaccineService {
             savedVaccines.add(result);
         }
         return savedVaccines;
+    }
+
+    public List<VaccineModel> editVaccineForPet(List<VaccineModel> vaccineModels, Optional<PetDetails> petDetails) throws UnableToPersistException {
+        //Delete previous vaccines
+        List<Vaccine> prevVaccines= vaccineRepository.findByPetIdAndIsActiveIsTrue(petDetails.get().getId());
+        vaccineRepository.deleteAll(prevVaccines);
+
+        return saveVaccineForPet(vaccineModels, petDetails);
     }
 
     public List<VaccineModel> getVaccinesFotPet(Long petId) {

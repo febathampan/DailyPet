@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface VaccineRepository extends JpaRepository<Vaccine, Long> {
     List<Vaccine> findByPetId(Long petId);
+
+    List<Vaccine> findByPetIdAndIsActiveIsTrue(Long petId);
 }

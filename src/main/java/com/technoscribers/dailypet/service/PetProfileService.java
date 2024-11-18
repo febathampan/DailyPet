@@ -2,10 +2,7 @@ package com.technoscribers.dailypet.service;
 
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
-import com.technoscribers.dailypet.model.AppointmentModel;
-import com.technoscribers.dailypet.model.MedicationModel;
-import com.technoscribers.dailypet.model.PetDetailsModel;
-import com.technoscribers.dailypet.model.VaccineModel;
+import com.technoscribers.dailypet.model.*;
 import com.technoscribers.dailypet.model.enumeration.WeightMetrics;
 import com.technoscribers.dailypet.repository.BreedRepository;
 import com.technoscribers.dailypet.repository.PetDetailsRepository;
@@ -13,14 +10,12 @@ import com.technoscribers.dailypet.repository.UserRepository;
 import com.technoscribers.dailypet.repository.entity.Breed;
 import com.technoscribers.dailypet.repository.entity.PetDetails;
 import com.technoscribers.dailypet.repository.entity.User;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +47,9 @@ public class PetProfileService {
     @Autowired
     BreedService breedService;
 
+    @Autowired
+    AnnouncementService announcementService;
+
     public PetDetailsModel savePet(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         //save Pet
         PetDetails details = savePetDetailsFromModel(model);
@@ -62,6 +60,7 @@ public class PetProfileService {
 
     private PetDetails savePetDetailsFromModel(PetDetailsModel model) throws InvalidInfoException, UnableToPersistException {
         if (model != null) {
+            Boolean isEdit =(model.getId()!=null && model.getId()>0)? true :false;
             Optional<Breed> breed = breedRepository.findById(model.getBreedId());
             Optional<User> user = userRepository.findById(model.getOwnerId());
             if (breed.isEmpty()) {
@@ -72,8 +71,11 @@ public class PetProfileService {
             }
             PetDetails details = new PetDetails(model.getName(), model.getDob(), model.getGender(), model.getIdNo(),
                     model.getWeight(), model.getUnit().name(), breed.get(), user.get(), model.getImageURL());
+            if(isEdit){
+                details.setId(model.getId());
+            }
             PetDetails savedDetails = petRepository.save(details);
-            if (savedDetails != null) {
+            if ((savedDetails != null)&& !isEdit) {
 
                 if (!model.getAppointments().isEmpty()) {
                     appointmentService.saveAppointmentForPet(model.getAppointments(), Optional.of(savedDetails));
@@ -84,8 +86,14 @@ public class PetProfileService {
                 if (!model.getMedications().isEmpty()) {
                     medicationService.saveMedicationForPet(model.getMedications(), Optional.of(savedDetails));
                 }
-                return savedDetails;
+            } else {
+                appointmentService.editAppointmentForPet(model.getAppointments(), Optional.of(savedDetails));
+                vaccineService.editVaccineForPet(model.getVaccines(), Optional.of(savedDetails));
+                medicationService.editMedicationForPet(model.getMedications(), Optional.of(savedDetails));
+
             }
+            return savedDetails;
+
         }
         throw new InvalidInfoException("Pet details incomplete!");
     }
@@ -110,4 +118,29 @@ public class PetProfileService {
         return petDetailsModels;
     }
 
+    public Boolean lostPet(Long petId) throws InvalidInfoException {
+        Boolean alertActive = false;
+        Optional<PetDetails> pet = petRepository.findById(petId);
+        if (pet.isEmpty()) {
+            throw new InvalidInfoException("Invalid pet details!");
+        }
+        AnnouncementModel model = createAnnouncementModel(pet.get());
+        alertActive = announcementService.saveAnnouncement(model);
+        return alertActive;
+    }
+
+    private AnnouncementModel createAnnouncementModel(PetDetails petDetails) {
+        AnnouncementModel model = new AnnouncementModel();
+        model.setTitle("Pet Lost Alert");
+        String message = petDetails.getName() + " lost it's owner." +
+                "If you find " + petDetails.getName() + " wandering, please email to " + petDetails.getOwner().getEmail() + " . ";
+        model.setPost(message);
+        model.setUserId(petDetails.getOwner().getId());
+        model.setIsActive(Boolean.TRUE);
+        model.setPublish(LocalDateTime.now());
+        model.setExpire(LocalDateTime.now().plusDays(14));
+        model.setCreatedDate(LocalDateTime.now());
+        model.setImageURL(petDetails.getImageURL());
+        return model;
+    }
 }

@@ -24,4 +24,15 @@ public class PetController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/alert")
+    public ResponseEntity<String> lostPet(@RequestParam Long petId){
+        Boolean alertActive = null;
+        try {
+            alertActive = petService.lostPet(petId);
+        } catch (InvalidInfoException e) {
+            return ResponseEntity.badRequest().body("Failed");
+        }
+        return ResponseEntity.ok().body(alertActive?"Success": "Failed");
+    }
 }

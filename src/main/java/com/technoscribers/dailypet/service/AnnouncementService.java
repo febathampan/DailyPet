@@ -24,7 +24,7 @@ public class AnnouncementService {
 
     public List<AnnouncementModel> getAllActiveAnnouncements() {
         List<Announcement> results = announcementRepository.findByIsActive(Boolean.TRUE);
-        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId(),a.getImageURL())).collect(Collectors.toList());
         return models;
     }
 
@@ -54,7 +54,7 @@ public class AnnouncementService {
      */
     public List<AnnouncementModel> getAllAnnouncements(Long ownerId) {
         List<Announcement> results = announcementRepository.findByOwnerId(ownerId);
-        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId(), a.getImageURL())).collect(Collectors.toList());
         return models;
     }
 
@@ -66,7 +66,7 @@ public class AnnouncementService {
      */
     public List<AnnouncementModel> getAnnouncementsForOwnerByActive(Boolean flag, Long ownerId) {
         List<Announcement> results = announcementRepository.findByIsActiveAndOwnerId(flag, ownerId);
-        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId())).collect(Collectors.toList());
+        List<AnnouncementModel> models = results.stream().map(a -> new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId(), a.getImageURL())).collect(Collectors.toList());
         return models;
     }
 
@@ -81,7 +81,21 @@ public class AnnouncementService {
             throw new InvalidInfoException("Invalid announcement id");
         }
         Announcement a = result.get();
-        AnnouncementModel model = new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId());
+        AnnouncementModel model = new AnnouncementModel(a.getId(), a.getTitle(), a.getPost(), a.getPublish(), a.getExpire(), a.getCreatedDate(), a.getIsActive(), a.getOwner().getId(), a.getImageURL());
         return model;
+    }
+
+    public Boolean saveAnnouncement(AnnouncementModel model) throws InvalidInfoException {
+        Optional<User> u = userService.findById(model.getUserId());
+        if (u.isEmpty()) {
+            throw new InvalidInfoException("UserID invalid!");
+        }
+
+        Announcement a = new Announcement(model.getTitle(), model.getPost(),
+                model.getPublish(), model.getExpire(), model.getCreatedDate(), model.getIsActive(),
+                u.get());
+        Announcement result = announcementRepository.save(a);
+        return Boolean.TRUE;
+
     }
 }
