@@ -3,6 +3,7 @@ package com.technoscribers.dailypet.service;
 import com.technoscribers.dailypet.exceptions.InvalidInfoException;
 import com.technoscribers.dailypet.exceptions.UnableToPersistException;
 import com.technoscribers.dailypet.model.*;
+import com.technoscribers.dailypet.model.enumeration.NotificationType;
 import com.technoscribers.dailypet.model.enumeration.WeightMetrics;
 import com.technoscribers.dailypet.repository.BreedRepository;
 import com.technoscribers.dailypet.repository.PetDetailsRepository;
@@ -10,14 +11,14 @@ import com.technoscribers.dailypet.repository.UserRepository;
 import com.technoscribers.dailypet.repository.entity.Breed;
 import com.technoscribers.dailypet.repository.entity.PetDetails;
 import com.technoscribers.dailypet.repository.entity.User;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,9 +32,6 @@ public class PetProfileService {
 
     @Autowired
     PetDetailsRepository petRepository;
-
-    @Autowired
-    ImageService imageService;
 
     @Autowired
     AppointmentService appointmentService;
@@ -142,5 +140,163 @@ public class PetProfileService {
         model.setCreatedDate(LocalDateTime.now());
         model.setImageURL(petDetails.getImageURL());
         return model;
+    }
+
+    //Notifications are just one way text messages.
+    public List<NotificationModel> getNotifications(Long ownerId) throws InvalidInfoException {
+        Optional<User> owner = userRepository.findById(ownerId);
+        if(owner.isEmpty()){
+            throw new InvalidInfoException("Invalid details");
+        }
+        List<PetDetails> pets = petRepository.findByOwner(owner.get());
+
+        // Use Streams to fetch appointments for each pet
+        Map<String ,List<AppointmentModel>> appointmentMap = pets.stream()
+                .collect(Collectors.toMap(
+                        PetDetails::getName, // Key: Pet name
+                        pet -> appointmentService.getAppointmentsFotPet(pet.getId()) // Value: List of appointments
+                ));
+
+        // Use Streams to fetch vaccines for each pet
+        Map<String ,List<VaccineModel>> vaccineMap = pets.stream()
+                .collect(Collectors.toMap(
+                        PetDetails::getName, // Key: Pet name
+                        pet -> vaccineService.getVaccinesFotPet(pet.getId()) // Value: List of appointments
+                ));
+
+        // Use Streams to fetch appointments for each pet
+        Map<String ,List<MedicationModel>> medicationMap = pets.stream()
+                .collect(Collectors.toMap(
+                        PetDetails::getName, // Key: Pet name
+                        pet -> medicationService.getMedicationsFotPet(pet.getId()) // Value: List of appointments
+                ));
+
+
+        List<NotificationModel> notifications = new ArrayList<>();
+        notifications.addAll(Collections.emptyList());
+        notifications.addAll(getAppointmentNotifications(appointmentMap));
+        notifications.addAll(getVaccineNotifications(vaccineMap));
+        notifications.addAll(getMedicationNotifications(medicationMap));
+        return notifications;
+
+    }
+
+    private List<NotificationModel> getMedicationNotifications(Map<String, List<MedicationModel>> medicationMap) {
+        if (medicationMap.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<NotificationModel> notifications = new ArrayList<>();
+
+        for (String petName : medicationMap.keySet()) {
+            List<MedicationModel> medModels = medicationMap.get(petName);
+            List<MedicationModel> alertMedModels = medModels.stream().filter( v -> isTodayIncluded(v.getStart(), v.getEnd())).collect(Collectors.toList());
+
+            List<NotificationModel> nModels = alertMedModels.stream().map(med -> {
+                String desc = petName + ": " + med.getName() + "\n" +
+                        "Dosage: " + med.getDosageInstructions() + "\n";
+
+                NotificationModel m = new NotificationModel(med.getId(), NotificationType.MEDICATION,
+                        desc, LocalDateTime.now(), null, petName);
+                return m;
+            }).collect(Collectors.toList());
+            notifications.addAll(nModels);
+        }
+        return notifications;
+    }
+
+    private boolean isTodayIncluded(Date start, Date end) {
+        if (start == null || end == null) {
+            return false; // Null safety check
+        }
+
+    // Truncate the start and end dates to remove the time component
+        Date today = new Date();
+        Date startOfToday = truncateTime(today);
+        Date startDate = truncateTime(start);
+        Date endDate = truncateTime(end);
+
+    // Check if today's date falls within the start and end range (inclusive)
+        return !startOfToday.before(startDate) && !startOfToday.after(endDate);
+    }
+    // Helper method to truncate time from a Date
+    private Date truncateTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    private List<NotificationModel> getVaccineNotifications(Map<String, List<VaccineModel>> vaccineMap) {
+        if (vaccineMap.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<NotificationModel> notifications = new ArrayList<>();
+
+        for (String petName : vaccineMap.keySet()) {
+            List<VaccineModel> vaccineModels = vaccineMap.get(petName);
+            List<VaccineModel> alertVaccines = vaccineModels.stream().filter( v -> isWithinDays(v.getScheduledDate(),2)).collect(Collectors.toList());
+            List<NotificationModel> nModels = alertVaccines.stream().map(vac -> {
+                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                String aptDate = df.format(vac.getScheduledDate());
+                String desc = petName + ": " + "\n" + vac.getName() + "\n" +
+                        "Scheduled date: " + aptDate + "\n";
+                if (vac.getDescription() != null) {
+                    desc = desc + vac.getDescription();
+                };
+                NotificationModel m = new NotificationModel(vac.getId(), NotificationType.VACCINATION,
+                        desc, LocalDateTime.now(), null, petName);
+                return m;
+            }).collect(Collectors.toList());
+            notifications.addAll(nModels);
+        }
+        return notifications;
+    }
+
+    private boolean isWithinDays(Date date, int noOfDays) {
+        if (date == null) {
+            return false; // Null-safe check
+        }
+
+        // Get the current date and time
+        Instant now = Instant.now();
+
+        // Convert the given Date to an Instant
+        Instant givenInstant = date.toInstant();
+
+        // Calculate the cutoff date as an Instant
+        Instant cutoffInstant = now.plusSeconds(noOfDays * 24 * 60 * 60);
+
+        // Check if the given date is today or after, and within the range
+        return !givenInstant.isBefore(now) && !givenInstant.isAfter(cutoffInstant);
+    }
+
+    private List<NotificationModel> getAppointmentNotifications(Map<String, List<AppointmentModel>> appointments) {
+        if (appointments.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<NotificationModel> notifications = new ArrayList<>();
+        for (String petName : appointments.keySet()) {
+            List<AppointmentModel> appointmentModels = appointments.get(petName);
+            List<AppointmentModel> alertApts = appointmentModels.stream().filter( v -> isWithinDays(v.getDate(),2)).collect(Collectors.toList());
+            List<NotificationModel> nModels = appointmentModels.stream().map(app -> {
+                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                String aptDate = df.format(app.getDate());
+                String desc = petName + ": " + "\n" + app.getTitle() + "\n" +
+                        app.getLocation() + "\n" +
+                        aptDate + ": " + app.getStartTime() + " - " + app.getEndTime() + "\n";
+                if(app.getDescription()!=null){
+                    desc = desc + app.getDescription();
+                };
+                NotificationModel m = new NotificationModel(app.getId(), NotificationType.APPOINTMENT,
+                        desc, LocalDateTime.now(), null, petName);
+                return m;
+            }).collect(Collectors.toList());
+            notifications.addAll(nModels);
+        }
+        return notifications;
     }
 }

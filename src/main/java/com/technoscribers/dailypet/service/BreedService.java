@@ -15,12 +15,12 @@ public class BreedService {
     BreedRepository breedRepository;
 
     public List<BreedModel> getAllBreeds(){
-        return breedRepository.findAll().stream().map(b -> new BreedModel(b.getId(), b.getLifeSpan(), b.getTemperament(), b.getDescription(),
-                b.getPetType().getType(), b.getPetType().getCategory(), b.getPetType().getDescription())).collect(Collectors.toList());
+        return breedRepository.findAll().stream().map(b -> new BreedModel(b.getId(), b.getLifeSpan(), b.getTemperament(), b.getBreedName(),
+                b.getPetType().getType(), b.getPetType().getCategory(), b.getDescription())).collect(Collectors.toList());
     }
 
     public BreedModel getModel(Breed b){
         return new BreedModel(b.getId(), b.getLifeSpan(), b.getTemperament(), b.getDescription(),
-                b.getPetType().getType(), b.getPetType().getCategory(), b.getPetType().getDescription());
+                b.getPetType().getType(), b.getPetType().getCategory(), b.getDescription());
     }
 }
