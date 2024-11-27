@@ -56,7 +56,7 @@ public class HomeController {
             return ResponseEntity.ok().body(user);
 
         } catch (InvalidInfoException e) {
-            return ResponseEntity.ok().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
@@ -68,7 +68,7 @@ public class HomeController {
             return ResponseEntity.ok().body(user);
 
         } catch (UnableToPersistException e) {
-            return ResponseEntity.ok().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
