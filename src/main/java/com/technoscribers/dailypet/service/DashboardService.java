@@ -52,6 +52,7 @@ public class DashboardService {
         dashboardModel.setUserId(userId);
         dashboardModel.setRole(RoleName.valueOf(user.getRoles().getName()));
         dashboardModel.setName(person.getFname());
+        dashboardModel.setEmail(user.getEmail());
         dashboardModel.setPetList(petDetails);
         dashboardModel.setAnnouncements(announcements);
         dashboardModel.setProfile(personModel);
