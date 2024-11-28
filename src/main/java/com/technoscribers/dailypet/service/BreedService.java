@@ -20,7 +20,7 @@ public class BreedService {
     }
 
     public BreedModel getModel(Breed b){
-        return new BreedModel(b.getId(), b.getLifeSpan(), b.getTemperament(), b.getDescription(),
+        return new BreedModel(b.getId(), b.getLifeSpan(), b.getTemperament(), b.getBreedName(),
                 b.getPetType().getType(), b.getPetType().getCategory(), b.getDescription());
     }
 }
