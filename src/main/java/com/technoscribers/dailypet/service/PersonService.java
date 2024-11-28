@@ -1,6 +1,7 @@
 package com.technoscribers.dailypet.service;
 
-import com.technoscribers.dailypet.model.DPPersonModel;
+import com.technoscribers.dailypet.exceptions.InvalidInfoException;
+import com.technoscribers.dailypet.model.*;
 import com.technoscribers.dailypet.model.enumeration.Sex;
 import com.technoscribers.dailypet.repository.PersonRepository;
 import com.technoscribers.dailypet.repository.entity.DpService;
@@ -31,7 +32,7 @@ public class PersonService {
         DPPersonModel model = null;
         if (person != null) {
             model = new DPPersonModel(person.getId(), person.getFname(), person.getLname(), person.getPhone(), Sex.valueOf(person.getGender()),
-                    person.getAddress(), person.getCity(),person.getProvince(), person.getPincode(), person.getDob(),person.getImageURL());
+                    person.getAddress(), person.getCity(), person.getProvince(), person.getPincode(), person.getDob(), person.getImageURL());
         }
         return model;
     }
@@ -46,5 +47,19 @@ public class PersonService {
 
     public Optional<Person> getPerson(Long personId) {
         return personRepository.findById(personId);
+    }
+
+    public Boolean saveAddressDetails(UserAddressModel addressModel) throws InvalidInfoException {
+        Optional<Person> optionalPerson = personRepository.findByUserId(addressModel.getUserId());
+        if (optionalPerson.isEmpty()) {
+            throw new InvalidInfoException("Invalid service details");
+        }
+        Person person = optionalPerson.get();
+        person.setAddress(addressModel.getAddress());
+        person.setCity(addressModel.getCity());
+        person.setProvince(addressModel.getProvince());
+        person.setPincode(addressModel.getPostCode());
+        personRepository.save(person);
+        return Boolean.TRUE;
     }
 }
