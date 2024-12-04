@@ -13,4 +13,5 @@ public class UserDashboardModel {
    private List<PetDetailsModel> petList;
    private List<AnnouncementModel> announcements;
    private DPPersonModel profile;
+   private String email;
 }

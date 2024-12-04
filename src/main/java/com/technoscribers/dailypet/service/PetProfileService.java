@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -194,9 +196,10 @@ public class PetProfileService {
             List<NotificationModel> nModels = alertMedModels.stream().map(med -> {
                 String desc = petName + ": " + med.getName() + "\n" +
                         "Dosage: " + med.getDosageInstructions() + "\n";
-
+String notificationMessage = "It is time to give "+petName +" their "+ med.getName()+
+        ". Dosage instruction: "+ med.getDosageInstructions();
                 NotificationModel m = new NotificationModel(med.getId(), NotificationType.MEDICATION,
-                        desc, LocalDateTime.now(), null, petName);
+                        notificationMessage, LocalDateTime.now(), null, petName);
                 return m;
             }).collect(Collectors.toList());
             notifications.addAll(nModels);
@@ -241,13 +244,15 @@ public class PetProfileService {
             List<NotificationModel> nModels = alertVaccines.stream().map(vac -> {
                 DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                 String aptDate = df.format(vac.getScheduledDate());
+
+                String notificationMsg = "There is a vaccine("+ vac.getName()+") scheduled for "+ petName+ " on "+ aptDate;
                 String desc = petName + ": " + "\n" + vac.getName() + "\n" +
                         "Scheduled date: " + aptDate + "\n";
                 if (vac.getDescription() != null) {
                     desc = desc + vac.getDescription();
                 };
                 NotificationModel m = new NotificationModel(vac.getId(), NotificationType.VACCINATION,
-                        desc, LocalDateTime.now(), null, petName);
+                        notificationMsg, LocalDateTime.now(), null, petName);
                 return m;
             }).collect(Collectors.toList());
             notifications.addAll(nModels);
@@ -266,11 +271,16 @@ public class PetProfileService {
         // Convert the given Date to an Instant
         Instant givenInstant = date.toInstant();
 
+
+        // Convert the given Instant to LocalDate (ignoring time) and then to start of that day
+            LocalDate givenLocalDate = givenInstant.atZone(ZoneOffset.UTC).toLocalDate();
+        Instant givenStartOfDay = givenLocalDate.atStartOfDay().toInstant(ZoneOffset.UTC);
+
         // Calculate the cutoff date as an Instant
         Instant cutoffInstant = now.plusSeconds(noOfDays * 24 * 60 * 60);
 
         // Check if the given date is today or after, and within the range
-        return !givenInstant.isBefore(now) && !givenInstant.isAfter(cutoffInstant);
+        return !givenInstant.isBefore(now) && !givenStartOfDay.isAfter(cutoffInstant);
     }
 
     private List<NotificationModel> getAppointmentNotifications(Map<String, List<AppointmentModel>> appointments) {
@@ -282,17 +292,20 @@ public class PetProfileService {
         for (String petName : appointments.keySet()) {
             List<AppointmentModel> appointmentModels = appointments.get(petName);
             List<AppointmentModel> alertApts = appointmentModels.stream().filter( v -> isWithinDays(v.getDate(),2)).collect(Collectors.toList());
-            List<NotificationModel> nModels = appointmentModels.stream().map(app -> {
+            List<NotificationModel> nModels = alertApts.stream().map(app -> {
                 DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                 String aptDate = df.format(app.getDate());
                 String desc = petName + ": " + "\n" + app.getTitle() + "\n" +
                         app.getLocation() + "\n" +
                         aptDate + ": " + app.getStartTime() + " - " + app.getEndTime() + "\n";
+
+                String notificationMsg = "You have an appointment - "+ app.getTitle() +" for "+petName+ " on "+ aptDate+ " from "
+                        + app.getStartTime()+" to " + app.getEndTime()+" at "+ app.getLocation();
                 if(app.getDescription()!=null){
                     desc = desc + app.getDescription();
                 };
                 NotificationModel m = new NotificationModel(app.getId(), NotificationType.APPOINTMENT,
-                        desc, LocalDateTime.now(), null, petName);
+                        notificationMsg, LocalDateTime.now(), null, petName);
                 return m;
             }).collect(Collectors.toList());
             notifications.addAll(nModels);
